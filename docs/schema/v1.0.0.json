@@ -1,0 +1,412 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/locktivity/epack-collector-modal/docs/schema/v1.0.0.json",
+  "title": "Modal workspace access",
+  "description": "The artifact epack-collector-modal emits at artifacts/modal.json: who can reach a Modal workspace, and what the workspace exposes through its tokens, secrets, and apps. A value the collector could not read is null or absent, and the collector result records a gap for it. The collector checks its output against this schema when it emits.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "collected_at", "collected_at_level", "workspace"],
+  "properties": {
+    "schema_version": {"type": "string", "const": "1.0.0", "description": "The version of this schema."},
+    "collected_at": {"type": "string", "format": "date-time", "description": "When the collector ran."},
+    "collected_at_level": {
+      "type": "string",
+      "enum": ["trust", "audit", "internal"],
+      "description": "The collection level the artifact was made at. audit adds the inventories to trust's counts, and internal adds nothing more."
+    },
+    "workspace": {
+      "type": "object",
+      "description": "The workspace the token belongs to.",
+      "additionalProperties": false,
+      "required": ["id", "name"],
+      "properties": {
+        "id": {"type": "string", "description": "The workspace's ID."},
+        "name": {"type": "string", "description": "The workspace's name."}
+      }
+    },
+    "members": {
+      "type": "object",
+      "description": "The workspace's members. Reading them needs a token that belongs to the workspace's Owner or a Manager. With any other token, or when the list fails, they are left out with a gap.",
+      "additionalProperties": false,
+      "required": ["total_count", "owner_count", "manager_count", "member_count", "sign_in", "inactive_count"],
+      "properties": {
+        "total_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Members of the workspace.",
+          "x-epack-rollup": {"rows": "inventory", "as": "count"}
+        },
+        "owner_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Members with the Owner role.",
+          "x-epack-rollup": {"rows": "inventory", "where": "/role", "equals": "owner", "as": "count"}
+        },
+        "manager_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Members with the Manager role.",
+          "x-epack-rollup": {"rows": "inventory", "where": "/role", "equals": "manager", "as": "count"}
+        },
+        "member_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Members with the Member role.",
+          "x-epack-rollup": {"rows": "inventory", "where": "/role", "equals": "member", "as": "count"}
+        },
+        "sign_in": {
+          "type": "object",
+          "description": "Members counted by how they sign in.",
+          "additionalProperties": false,
+          "required": ["github_count", "google_count", "saml_count", "other_count"],
+          "properties": {
+            "github_count": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Members who sign in with GitHub.",
+              "x-epack-rollup": {"rows": "1/inventory", "where": "/sign_in", "equals": "github", "as": "count"}
+            },
+            "google_count": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Members who sign in with Google.",
+              "x-epack-rollup": {"rows": "1/inventory", "where": "/sign_in", "equals": "google", "as": "count"}
+            },
+            "saml_count": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Members who sign in through SAML SSO.",
+              "x-epack-rollup": {"rows": "1/inventory", "where": "/sign_in", "equals": "saml", "as": "count"}
+            },
+            "other_count": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Members who sign in some other way, or whose sign-in Modal does not report.",
+              "x-epack-rollup": {"rows": "1/inventory", "where": "/sign_in", "equals": "other", "as": "count"}
+            }
+          }
+        },
+        "inactive_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Members with no activity in the 90 days before the collector ran, including members who have never been active. The collector's calls count as activity for the member the token belongs to, so that member is never inactive.",
+          "x-epack-rollup": {"rows": "inventory", "where": "/inactive", "as": "count"}
+        },
+        "inventory": {
+          "type": "array",
+          "description": "Every member, sorted by email.",
+          "x-epack-level": "audit",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "email", "role", "sign_in", "joined_at", "last_active_at", "inactive"],
+            "properties": {
+              "name": {"type": "string", "description": "The member's display name."},
+              "email": {"type": "string", "description": "The member's email address, in lowercase."},
+              "role": {
+                "type": "string",
+                "enum": ["owner", "manager", "member", "other"],
+                "description": "The member's workspace role. other is a role this version of the collector does not know."
+              },
+              "sign_in": {
+                "type": "string",
+                "enum": ["github", "google", "saml", "other"],
+                "description": "How the member signs in."
+              },
+              "joined_at": {
+                "type": ["string", "null"],
+                "format": "date-time",
+                "description": "When the member joined the workspace. Null when the API does not say."
+              },
+              "last_active_at": {
+                "type": ["string", "null"],
+                "format": "date-time",
+                "description": "When the member was last active. Null for a member who has never been active."
+              },
+              "inactive": {
+                "type": "boolean",
+                "description": "Whether the member had no activity in the 90 days before the collector ran, or has never been active."
+              }
+            }
+          }
+        }
+      }
+    },
+    "environments": {
+      "type": "object",
+      "description": "The environments the token can see. Left out, with a gap, when they could not be listed.",
+      "additionalProperties": false,
+      "required": ["total_count", "restricted_count"],
+      "properties": {
+        "total_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Environments the token can see.",
+          "x-epack-rollup": {"rows": "inventory", "as": "count"}
+        },
+        "restricted_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Environments with restricted access, where a member needs a role in the environment to use it.",
+          "x-epack-rollup": {"rows": "inventory", "where": "/restricted", "as": "count"}
+        },
+        "inventory": {
+          "type": "array",
+          "description": "Every environment the token can see, sorted by name.",
+          "x-epack-level": "audit",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "default", "restricted", "created_at", "default_member_role", "blocks_unauthenticated", "roles"],
+            "properties": {
+              "name": {"type": "string", "description": "The environment's name."},
+              "default": {"type": "boolean", "description": "Whether this is the workspace's default environment."},
+              "restricted": {"type": "boolean", "description": "Whether only members and service users with a role in the environment can use it."},
+              "created_at": {
+                "type": ["string", "null"],
+                "format": "date-time",
+                "description": "When the environment was created. Null when the API does not say."
+              },
+              "default_member_role": {
+                "type": ["string", "null"],
+                "enum": ["contributor", "viewer", "no_access", "modal_observer", "other", null],
+                "description": "The role a member gets in a restricted environment when they hold no role of their own. other is a role this version of the collector does not know. Null when Modal reports none."
+              },
+              "blocks_unauthenticated": {
+                "type": ["boolean", "null"],
+                "description": "Whether the environment rejects new web endpoints, servers, and tunnels that anyone can call without authentication.",
+                "x-epack-null": "The environment has no setting of its own, so it follows the workspace default, which the API does not report"
+              },
+              "roles": {
+                "type": ["array", "null"],
+                "description": "Who holds a role of their own in a restricted environment, sorted by kind, then principal. Members who only inherit default_member_role are left out. Null for an environment that is not restricted.",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["principal", "kind", "role"],
+                  "properties": {
+                    "principal": {"type": "string", "description": "The member's email address, or the service user's name."},
+                    "kind": {"type": "string", "enum": ["member", "service_user"], "description": "Whether the role belongs to a member or a service user."},
+                    "role": {"type": "string", "description": "The role, such as contributor or viewer, or the name of a custom role."}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "service_users": {
+      "type": "object",
+      "description": "The workspace's service users. Left out, with a gap, when they could not be listed.",
+      "additionalProperties": false,
+      "required": ["total_count", "never_used_count"],
+      "properties": {
+        "total_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Service users in the workspace.",
+          "x-epack-rollup": {"rows": "inventory", "as": "count"}
+        },
+        "never_used_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Service users that have never been used.",
+          "x-epack-rollup": {"rows": "inventory", "where": "/never_used", "as": "count"}
+        },
+        "inventory": {
+          "type": "array",
+          "description": "Every service user, sorted by name.",
+          "x-epack-level": "audit",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "created_by", "created_at", "last_used_at", "never_used"],
+            "properties": {
+              "name": {"type": "string", "description": "The service user's name."},
+              "created_by": {"type": ["string", "null"], "description": "Who created the service user. Null when the API does not say."},
+              "created_at": {
+                "type": ["string", "null"],
+                "format": "date-time",
+                "description": "When the service user was created. Null when the API does not say."
+              },
+              "last_used_at": {
+                "type": ["string", "null"],
+                "format": "date-time",
+                "description": "When the service user was last used. Null for one that has never been used."
+              },
+              "never_used": {"type": "boolean", "description": "Whether the service user has never been used."}
+            }
+          }
+        }
+      }
+    },
+    "proxy_auth_tokens": {
+      "type": "object",
+      "description": "The tokens callers present to reach a web endpoint that requires proxy auth. Left out, with a gap, when they could not be listed.",
+      "additionalProperties": false,
+      "required": ["total_count", "unscoped_count"],
+      "properties": {
+        "total_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Proxy auth tokens in the workspace.",
+          "x-epack-rollup": {"rows": "inventory", "as": "count"}
+        },
+        "unscoped_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Tokens that work in every environment.",
+          "x-epack-rollup": {"rows": "inventory", "where": "/scoped", "equals": false, "as": "count"}
+        },
+        "inventory": {
+          "type": "array",
+          "description": "Every proxy auth token, sorted by name.",
+          "x-epack-level": "audit",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "created_by", "created_at", "scoped", "environments"],
+            "properties": {
+              "name": {"type": "string", "description": "The token's name."},
+              "created_by": {"type": ["string", "null"], "description": "Who created the token. Null when the API does not say."},
+              "created_at": {
+                "type": ["string", "null"],
+                "format": "date-time",
+                "description": "When the token was created. Null when the API does not say."
+              },
+              "scoped": {"type": "boolean", "description": "Whether the token works only in the environments it lists."},
+              "environments": {
+                "type": ["array", "null"],
+                "description": "The environments a scoped token works in, sorted. Null for a token that is not scoped.",
+                "items": {"type": "string"}
+              }
+            }
+          }
+        }
+      }
+    },
+    "secrets": {
+      "type": "object",
+      "description": "The secrets in every environment the token can see, without their values. Left out, with a gap, when an environment's secrets could not be listed, since the counts would cover only part of the workspace.",
+      "additionalProperties": false,
+      "required": ["total_count", "never_used_count"],
+      "properties": {
+        "total_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Secrets across those environments.",
+          "x-epack-rollup": {"rows": "inventory", "as": "count"}
+        },
+        "never_used_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Secrets that have never been used.",
+          "x-epack-rollup": {"rows": "inventory", "where": "/never_used", "as": "count"}
+        },
+        "inventory": {
+          "type": "array",
+          "description": "Every secret, sorted by environment, then name.",
+          "x-epack-level": "audit",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "environment", "created_by", "created_at", "last_used_at", "never_used", "keys"],
+            "properties": {
+              "name": {"type": "string", "description": "The secret's name."},
+              "environment": {"type": "string", "description": "The environment the secret belongs to."},
+              "created_by": {"type": ["string", "null"], "description": "Who created the secret. Null when the API does not say."},
+              "created_at": {
+                "type": ["string", "null"],
+                "format": "date-time",
+                "description": "When the secret was created. Null when the API does not say."
+              },
+              "last_used_at": {
+                "type": ["string", "null"],
+                "format": "date-time",
+                "description": "When the secret was last used. Null for one that has never been used."
+              },
+              "never_used": {"type": "boolean", "description": "Whether the secret has never been used."},
+              "keys": {
+                "type": "array",
+                "description": "The names of the secret's keys, sorted. The collector never reads their values.",
+                "items": {"type": "string"}
+              }
+            }
+          }
+        }
+      }
+    },
+    "apps": {
+      "type": "object",
+      "description": "The apps in every environment the token can see. The counts cover deployed apps. Left out, with a gap, when an environment's apps or a deployed app's functions could not be read, since the counts would cover only part of the workspace.",
+      "additionalProperties": false,
+      "required": ["deployed_count", "web_endpoint_count", "unauthenticated_endpoint_count", "scheduled_function_count"],
+      "properties": {
+        "deployed_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Deployed apps.",
+          "x-epack-rollup": {"rows": "inventory", "where": "/state", "equals": "deployed", "as": "count"}
+        },
+        "web_endpoint_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Functions of deployed apps that serve web requests."
+        },
+        "unauthenticated_endpoint_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Of those, the ones anyone with the URL can call, with no proxy auth token."
+        },
+        "scheduled_function_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Functions of deployed apps that run on a schedule."
+        },
+        "inventory": {
+          "type": "array",
+          "description": "Every app, sorted by environment, then name.",
+          "x-epack-level": "audit",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "environment", "state", "created_at", "web_endpoints", "unauthenticated_endpoints", "scheduled_functions"],
+            "properties": {
+              "name": {"type": "string", "description": "The app's name."},
+              "environment": {"type": "string", "description": "The environment the app belongs to."},
+              "state": {
+                "type": "string",
+                "enum": ["deployed", "ephemeral", "detached", "stopping", "stopped", "initializing", "disabled", "other"],
+                "description": "The app's state. other is a state this version of the collector does not know."
+              },
+              "created_at": {
+                "type": ["string", "null"],
+                "format": "date-time",
+                "description": "When the app was created. Null when the API does not say."
+              },
+              "web_endpoints": {
+                "type": ["integer", "null"],
+                "minimum": 0,
+                "description": "The app's functions that serve web requests.",
+                "x-epack-null": "The app is not deployed, and the collector reads the functions of deployed apps only"
+              },
+              "unauthenticated_endpoints": {
+                "type": ["integer", "null"],
+                "minimum": 0,
+                "description": "Of those, the ones anyone with the URL can call, with no proxy auth token.",
+                "x-epack-null": "The app is not deployed, and the collector reads the functions of deployed apps only"
+              },
+              "scheduled_functions": {
+                "type": ["integer", "null"],
+                "minimum": 0,
+                "description": "The app's functions that run on a schedule.",
+                "x-epack-null": "The app is not deployed, and the collector reads the functions of deployed apps only"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,61 @@
+.PHONY: build build-all test lint clean conformance record trace-map sdk-test sdk-run
+
+BINARY_NAME := epack-collector-modal
+MAIN := ./cmd/epack-collector-modal
+VERSION := $(shell git describe --tags --always --dirty 2>/dev/null || echo "dev")
+COMMIT := $(shell git rev-parse --verify HEAD 2>/dev/null || echo "unknown")
+LDFLAGS := -X 'main.Version=$(VERSION)' -X 'main.Commit=$(COMMIT)'
+EPACK_VERSION = $(shell go list -m -f '{{.Version}}' github.com/locktivity/epack)
+# Variables the collector reads credentials from, as conformance-secrets in
+# .github/workflows/ci.yaml lists them. Conformance sets each to a canary
+# value, fails if any output prints it, and checks that the rejected
+# credential exits 3.
+CONFORMANCE_SECRETS := MODAL_TOKEN_ID MODAL_TOKEN_SECRET
+
+build:
+	go build -ldflags "$(LDFLAGS)" -o $(BINARY_NAME) $(MAIN)
+
+build-all:
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags "$(LDFLAGS)" -o $(BINARY_NAME)-linux-amd64 $(MAIN)
+	CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -trimpath -ldflags "$(LDFLAGS)" -o $(BINARY_NAME)-linux-arm64 $(MAIN)
+	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -trimpath -ldflags "$(LDFLAGS)" -o $(BINARY_NAME)-darwin-amd64 $(MAIN)
+	CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 go build -trimpath -ldflags "$(LDFLAGS)" -o $(BINARY_NAME)-darwin-arm64 $(MAIN)
+
+# Runs the unit tests and the collectortest suite.
+test:
+	go test -race -v ./...
+
+GOLANGCI_LINT_VERSION := v2.9.0
+GOLANGCI_LINT := ./bin/golangci-lint
+
+$(GOLANGCI_LINT):
+	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/$(GOLANGCI_LINT_VERSION)/install.sh | sh -s -- -b ./bin $(GOLANGCI_LINT_VERSION)
+
+lint: $(GOLANGCI_LINT)
+	$(GOLANGCI_LINT) run ./...
+
+clean:
+	rm -f $(BINARY_NAME) $(BINARY_NAME)-*
+
+# Conformance at the epack version go.mod pins, as CI runs it.
+conformance: build
+	go run -tags conformance github.com/locktivity/epack/cmd/epack-conformance@$(EPACK_VERSION) collector ./$(BINARY_NAME) --level standard \
+		$(foreach s,$(CONFORMANCE_SECRETS),--secret $(s))
+
+# Rewrites docs/schema/trace-map.json from the collectortest suites and the
+# source, at the epack version go.mod pins, as CI checks it. Commit the result.
+trace-map:
+	go run -tags components github.com/locktivity/epack/cmd/epack@$(EPACK_VERSION) sdk map
+
+# Records the sandbox workspace to
+# internal/collector/testdata/recordings/modal.json. It reads the
+# SANDBOX_MODAL_ variables and the token that internal/collector/record_test.go
+# names.
+record:
+	go test -tags record -run '^TestRecord$$/^modal$$' -count=1 -v ./internal/collector/
+
+sdk-test:
+	epack sdk test .
+
+sdk-run: build
+	epack sdk run ./$(BINARY_NAME)

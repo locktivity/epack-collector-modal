@@ -1,0 +1,3701 @@
+{
+  "artifacts": {
+    "artifacts/modal.json": {
+      "/apps": {
+        "operations": [
+          "modal.apps.info.get",
+          "modal.apps.list",
+          "modal.environments.list"
+        ],
+        "code": [
+          {
+            "role": "condition",
+            "line": "internal/collector/collector.go:24"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/collector.go:27"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/collector.go:35"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/collector.go:38"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/collector.go:50"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/collector.go:51"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/collector.go:60"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/collector.go:66"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/collector.go:68"
+          },
+          {
+            "role": "helper",
+            "line": "internal/collector/workloads.go:60",
+            "end": 99
+          }
+        ],
+        "gaps": [
+          "internal/collector/collector.go:63",
+          "internal/collector/workloads.go:66",
+          "internal/collector/workloads.go:79"
+        ]
+      },
+      "/apps/deployed_count": {
+        "operations": [
+          "modal.apps.info.get",
+          "modal.apps.list",
+          "modal.environments.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:24"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:25"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:29"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:34"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:35"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:63"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/workloads.go:64"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:65"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:69"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:76"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:78"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/workloads.go:84"
+          }
+        ],
+        "gaps": [
+          "internal/collector/collector.go:63",
+          "internal/collector/workloads.go:66",
+          "internal/collector/workloads.go:79"
+        ]
+      },
+      "/apps/inventory": {
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:24"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:25"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:29"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:34"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:35"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/workloads.go:62"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:63"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/workloads.go:64"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:65"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:69"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/workloads.go:70"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/workloads.go:89"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:92"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/workloads.go:96"
+          }
+        ]
+      },
+      "/apps/inventory/*/created_at": {
+        "operations": [
+          "modal.apps.info.get",
+          "modal.apps.list",
+          "modal.environments.list"
+        ],
+        "code": [
+          {
+            "role": "helper",
+            "line": "internal/collector/collector.go:84",
+            "end": 90
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:24"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:25"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:29"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:34"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:35"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:63"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/workloads.go:64"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:65"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:69"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/workloads.go:74"
+          }
+        ],
+        "gaps": [
+          "internal/collector/collector.go:63",
+          "internal/collector/workloads.go:66",
+          "internal/collector/workloads.go:79"
+        ]
+      },
+      "/apps/inventory/*/environment": {
+        "operations": [
+          "modal.apps.info.get",
+          "modal.apps.list",
+          "modal.environments.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:24"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:25"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:29"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:34"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:35"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:63"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/workloads.go:64"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:65"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:69"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/workloads.go:72"
+          }
+        ],
+        "gaps": [
+          "internal/collector/collector.go:63",
+          "internal/collector/workloads.go:66",
+          "internal/collector/workloads.go:79"
+        ]
+      },
+      "/apps/inventory/*/name": {
+        "operations": [
+          "modal.apps.info.get",
+          "modal.apps.list",
+          "modal.environments.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:24"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:25"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:29"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:34"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:35"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:63"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/workloads.go:64"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:65"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:69"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/workloads.go:71"
+          }
+        ],
+        "gaps": [
+          "internal/collector/collector.go:63",
+          "internal/collector/workloads.go:66",
+          "internal/collector/workloads.go:79"
+        ]
+      },
+      "/apps/inventory/*/scheduled_functions": {
+        "operations": [
+          "modal.apps.info.get",
+          "modal.apps.list",
+          "modal.environments.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:24"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:25"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:29"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:34"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:35"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:63"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/workloads.go:64"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:65"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:69"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:76"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/workloads.go:77"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:78"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/workloads.go:82"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/workloads.go:83"
+          }
+        ],
+        "gaps": [
+          "internal/collector/collector.go:63",
+          "internal/collector/workloads.go:66",
+          "internal/collector/workloads.go:79"
+        ]
+      },
+      "/apps/inventory/*/state": {
+        "operations": [
+          "modal.apps.info.get",
+          "modal.apps.list",
+          "modal.environments.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:24"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:25"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:29"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:34"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:35"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:63"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/workloads.go:64"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:65"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:69"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/workloads.go:73"
+          },
+          {
+            "role": "helper",
+            "line": "internal/collector/workloads.go:120",
+            "end": 139
+          }
+        ],
+        "gaps": [
+          "internal/collector/collector.go:63",
+          "internal/collector/workloads.go:66",
+          "internal/collector/workloads.go:79"
+        ]
+      },
+      "/apps/inventory/*/unauthenticated_endpoints": {
+        "operations": [
+          "modal.apps.info.get",
+          "modal.apps.list",
+          "modal.environments.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:24"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:25"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:29"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:34"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:35"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:63"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/workloads.go:64"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:65"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:69"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:76"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/workloads.go:77"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:78"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/workloads.go:82"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/workloads.go:83"
+          }
+        ],
+        "gaps": [
+          "internal/collector/collector.go:63",
+          "internal/collector/workloads.go:66",
+          "internal/collector/workloads.go:79"
+        ]
+      },
+      "/apps/inventory/*/web_endpoints": {
+        "operations": [
+          "modal.apps.info.get",
+          "modal.apps.list",
+          "modal.environments.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:24"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:25"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:29"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:34"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:35"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:63"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/workloads.go:64"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:65"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:69"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:76"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/workloads.go:77"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:78"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/workloads.go:82"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/workloads.go:83"
+          }
+        ],
+        "gaps": [
+          "internal/collector/collector.go:63",
+          "internal/collector/workloads.go:66",
+          "internal/collector/workloads.go:79"
+        ]
+      },
+      "/apps/scheduled_function_count": {
+        "operations": [
+          "modal.apps.info.get",
+          "modal.apps.list",
+          "modal.environments.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:24"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:25"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:29"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:34"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:35"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:63"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/workloads.go:64"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:65"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:69"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:76"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/workloads.go:77"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:78"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/workloads.go:82"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/workloads.go:87"
+          }
+        ],
+        "gaps": [
+          "internal/collector/collector.go:63",
+          "internal/collector/workloads.go:66",
+          "internal/collector/workloads.go:79"
+        ]
+      },
+      "/apps/unauthenticated_endpoint_count": {
+        "operations": [
+          "modal.apps.info.get",
+          "modal.apps.list",
+          "modal.environments.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:24"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:25"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:29"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:34"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:35"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:63"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/workloads.go:64"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:65"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:69"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:76"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/workloads.go:77"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:78"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/workloads.go:82"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/workloads.go:86"
+          }
+        ],
+        "gaps": [
+          "internal/collector/collector.go:63",
+          "internal/collector/workloads.go:66",
+          "internal/collector/workloads.go:79"
+        ]
+      },
+      "/apps/web_endpoint_count": {
+        "operations": [
+          "modal.apps.info.get",
+          "modal.apps.list",
+          "modal.environments.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:24"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:25"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:29"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:34"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:35"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:63"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/workloads.go:64"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:65"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:69"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:76"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/workloads.go:77"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:78"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/workloads.go:82"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/workloads.go:85"
+          }
+        ],
+        "gaps": [
+          "internal/collector/collector.go:63",
+          "internal/collector/workloads.go:66",
+          "internal/collector/workloads.go:79"
+        ]
+      },
+      "/collected_at": {
+        "code": [
+          {
+            "role": "condition",
+            "line": "internal/collector/collector.go:24"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/collector.go:41"
+          }
+        ]
+      },
+      "/collected_at_level": {
+        "code": [
+          {
+            "role": "condition",
+            "line": "internal/collector/collector.go:24"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/collector.go:42"
+          }
+        ]
+      },
+      "/environments": {
+        "operations": [
+          "modal.environments.list"
+        ],
+        "code": [
+          {
+            "role": "condition",
+            "line": "internal/collector/collector.go:24"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/collector.go:27"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/collector.go:35"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/collector.go:38"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/collector.go:50"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/collector.go:51"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/collector.go:52"
+          }
+        ],
+        "gaps": [
+          "internal/collector/environments.go:26"
+        ]
+      },
+      "/environments/inventory/*/blocks_unauthenticated": {
+        "operations": [
+          "modal.environments.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:24"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:25"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:29"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:34"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:46"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:47"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/environments.go:48"
+          }
+        ],
+        "gaps": [
+          "internal/collector/environments.go:26"
+        ]
+      },
+      "/environments/inventory/*/created_at": {
+        "operations": [
+          "modal.environments.list"
+        ],
+        "code": [
+          {
+            "role": "helper",
+            "line": "internal/collector/collector.go:84",
+            "end": 90
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:24"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:25"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:29"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:34"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/environments.go:40"
+          }
+        ],
+        "gaps": [
+          "internal/collector/environments.go:26"
+        ]
+      },
+      "/environments/inventory/*/default": {
+        "operations": [
+          "modal.environments.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:24"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:25"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:29"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:34"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/environments.go:38"
+          }
+        ],
+        "gaps": [
+          "internal/collector/environments.go:26"
+        ]
+      },
+      "/environments/inventory/*/default_member_role": {
+        "operations": [
+          "modal.environments.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:24"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:25"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:29"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:34"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:42"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:43"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/environments.go:44"
+          }
+        ],
+        "gaps": [
+          "internal/collector/environments.go:26"
+        ]
+      },
+      "/environments/inventory/*/name": {
+        "operations": [
+          "modal.environments.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:24"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:25"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:29"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:34"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/environments.go:37"
+          }
+        ],
+        "gaps": [
+          "internal/collector/environments.go:26"
+        ]
+      },
+      "/environments/inventory/*/restricted": {
+        "operations": [
+          "modal.environments.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:24"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:25"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:29"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:34"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/environments.go:39"
+          }
+        ],
+        "gaps": [
+          "internal/collector/environments.go:26"
+        ]
+      },
+      "/environments/inventory/*/roles": {
+        "operations": [
+          "modal.environments.roles.get"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:24"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:25"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:29"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:34"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:39"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:50"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:52"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/environments.go:53"
+          },
+          {
+            "role": "helper",
+            "line": "internal/collector/environments.go:68",
+            "end": 95
+          }
+        ],
+        "gaps": [
+          "internal/collector/environments.go:26",
+          "internal/collector/environments.go:71"
+        ]
+      },
+      "/environments/inventory/*/roles/*/kind": {
+        "operations": [
+          "modal.environments.list",
+          "modal.environments.roles.get"
+        ],
+        "code": [
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:70"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:75"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:76"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:83"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:84"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/environments.go:85"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:86"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/environments.go:87"
+          }
+        ],
+        "gaps": [
+          "internal/collector/environments.go:26",
+          "internal/collector/environments.go:71"
+        ]
+      },
+      "/environments/inventory/*/roles/*/principal": {
+        "operations": [
+          "modal.environments.list",
+          "modal.environments.roles.get"
+        ],
+        "code": [
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:70"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:75"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:76"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:83"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:84"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/environments.go:85"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:86"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/environments.go:87"
+          }
+        ],
+        "gaps": [
+          "internal/collector/environments.go:26",
+          "internal/collector/environments.go:71"
+        ]
+      },
+      "/environments/inventory/*/roles/*/role": {
+        "operations": [
+          "modal.environments.list",
+          "modal.environments.roles.get"
+        ],
+        "code": [
+          {
+            "role": "helper",
+            "line": "internal/collector/collector.go:100",
+            "end": 113
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:70"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:75"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:76"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/environments.go:79"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:80"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/environments.go:81"
+          }
+        ],
+        "gaps": [
+          "internal/collector/environments.go:26",
+          "internal/collector/environments.go:71"
+        ]
+      },
+      "/environments/restricted_count": {
+        "operations": [
+          "modal.environments.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:24"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:25"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:29"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:34"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:39"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:50"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/environments.go:51"
+          }
+        ],
+        "gaps": [
+          "internal/collector/environments.go:26"
+        ]
+      },
+      "/environments/total_count": {
+        "operations": [
+          "modal.environments.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:24"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:25"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:29"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/environments.go:31"
+          }
+        ],
+        "gaps": [
+          "internal/collector/environments.go:26"
+        ]
+      },
+      "/members": {
+        "operations": [
+          "modal.members.list"
+        ],
+        "code": [
+          {
+            "role": "condition",
+            "line": "internal/collector/collector.go:24"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/collector.go:27"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/collector.go:35"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/collector.go:37"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/collector.go:38"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/collector.go:46"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/collector.go:47"
+          },
+          {
+            "role": "helper",
+            "line": "internal/collector/members.go:20",
+            "end": 75
+          }
+        ],
+        "gaps": [
+          "internal/collector/members.go:27"
+        ]
+      },
+      "/members/inactive_count": {
+        "operations": [
+          "modal.members.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/members.go:21"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:22"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/members.go:32"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:33"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:34"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/members.go:45"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:65"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/members.go:66"
+          }
+        ],
+        "gaps": [
+          "internal/collector/members.go:27"
+        ]
+      },
+      "/members/inventory/*/email": {
+        "operations": [
+          "modal.members.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/members.go:21"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:22"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:33"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:34"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/members.go:39"
+          }
+        ],
+        "gaps": [
+          "internal/collector/members.go:27"
+        ]
+      },
+      "/members/inventory/*/inactive": {
+        "operations": [
+          "modal.members.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/members.go:21"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:22"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/members.go:32"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:33"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:34"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/members.go:45"
+          }
+        ],
+        "gaps": [
+          "internal/collector/members.go:27"
+        ]
+      },
+      "/members/inventory/*/joined_at": {
+        "operations": [
+          "modal.members.list"
+        ],
+        "code": [
+          {
+            "role": "helper",
+            "line": "internal/collector/collector.go:84",
+            "end": 90
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/members.go:21"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:22"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:33"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:34"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/members.go:42"
+          }
+        ],
+        "gaps": [
+          "internal/collector/members.go:27"
+        ]
+      },
+      "/members/inventory/*/last_active_at": {
+        "operations": [
+          "modal.members.list"
+        ],
+        "code": [
+          {
+            "role": "helper",
+            "line": "internal/collector/collector.go:84",
+            "end": 90
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/members.go:21"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:22"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:33"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:34"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/members.go:43"
+          }
+        ],
+        "gaps": [
+          "internal/collector/members.go:27"
+        ]
+      },
+      "/members/inventory/*/name": {
+        "operations": [
+          "modal.members.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/members.go:21"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:22"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:33"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:34"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/members.go:38"
+          }
+        ],
+        "gaps": [
+          "internal/collector/members.go:27"
+        ]
+      },
+      "/members/inventory/*/role": {
+        "operations": [
+          "modal.members.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/members.go:21"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:22"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:33"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:34"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/members.go:40"
+          },
+          {
+            "role": "helper",
+            "line": "internal/collector/members.go:77",
+            "end": 88
+          }
+        ],
+        "gaps": [
+          "internal/collector/members.go:27"
+        ]
+      },
+      "/members/inventory/*/sign_in": {
+        "operations": [
+          "modal.members.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/members.go:21"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:22"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:33"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:34"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/members.go:41"
+          },
+          {
+            "role": "helper",
+            "line": "internal/collector/members.go:90",
+            "end": 101
+          }
+        ],
+        "gaps": [
+          "internal/collector/members.go:27"
+        ]
+      },
+      "/members/manager_count": {
+        "operations": [
+          "modal.members.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/members.go:21"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:22"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:33"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:34"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/members.go:40"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:47"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:50"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/members.go:51"
+          }
+        ],
+        "gaps": [
+          "internal/collector/members.go:27"
+        ]
+      },
+      "/members/member_count": {
+        "operations": [
+          "modal.members.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/members.go:21"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:22"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:33"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:34"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/members.go:40"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:47"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:52"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/members.go:53"
+          }
+        ],
+        "gaps": [
+          "internal/collector/members.go:27"
+        ]
+      },
+      "/members/owner_count": {
+        "operations": [
+          "modal.members.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/members.go:21"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:22"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:33"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:34"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/members.go:40"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:47"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:48"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/members.go:49"
+          }
+        ],
+        "gaps": [
+          "internal/collector/members.go:27"
+        ]
+      },
+      "/members/sign_in/github_count": {
+        "operations": [
+          "modal.members.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/members.go:21"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:22"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:33"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:34"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/members.go:41"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:55"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:56"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/members.go:57"
+          }
+        ],
+        "gaps": [
+          "internal/collector/members.go:27"
+        ]
+      },
+      "/members/sign_in/google_count": {
+        "operations": [
+          "modal.members.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/members.go:21"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:22"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:33"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:34"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/members.go:41"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:55"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:58"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/members.go:59"
+          }
+        ],
+        "gaps": [
+          "internal/collector/members.go:27"
+        ]
+      },
+      "/members/sign_in/other_count": {
+        "operations": [
+          "modal.members.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/members.go:21"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:22"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:33"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:34"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/members.go:41"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:55"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:62"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/members.go:63"
+          }
+        ],
+        "gaps": [
+          "internal/collector/members.go:27"
+        ]
+      },
+      "/members/sign_in/saml_count": {
+        "operations": [
+          "modal.members.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/members.go:21"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:22"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:33"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:34"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/members.go:41"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:55"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:60"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/members.go:61"
+          }
+        ],
+        "gaps": [
+          "internal/collector/members.go:27"
+        ]
+      },
+      "/members/total_count": {
+        "operations": [
+          "modal.members.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/members.go:21"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:22"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:33"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/members.go:34"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/members.go:46"
+          }
+        ],
+        "gaps": [
+          "internal/collector/members.go:27"
+        ]
+      },
+      "/proxy_auth_tokens": {
+        "operations": [
+          "modal.proxy_tokens.list"
+        ],
+        "code": [
+          {
+            "role": "condition",
+            "line": "internal/collector/collector.go:24"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/collector.go:27"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/collector.go:35"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/collector.go:38"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/collector.go:50"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/collector.go:51"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/collector.go:55"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/collector.go:57"
+          },
+          {
+            "role": "helper",
+            "line": "internal/collector/tokens.go:46",
+            "end": 84
+          }
+        ],
+        "gaps": [
+          "internal/collector/tokens.go:49"
+        ]
+      },
+      "/proxy_auth_tokens/inventory": {
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/tokens.go:47"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:48"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/tokens.go:53"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:54"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/tokens.go:55"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/tokens.go:64"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:66"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/tokens.go:69"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:70"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/tokens.go:71"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/tokens.go:74"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:75"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/tokens.go:76"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/tokens.go:80"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/tokens.go:82"
+          }
+        ]
+      },
+      "/proxy_auth_tokens/inventory/*/created_at": {
+        "operations": [
+          "modal.proxy_tokens.list"
+        ],
+        "code": [
+          {
+            "role": "helper",
+            "line": "internal/collector/collector.go:84",
+            "end": 90
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/tokens.go:47"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:48"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:54"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/tokens.go:58"
+          }
+        ],
+        "gaps": [
+          "internal/collector/tokens.go:49"
+        ]
+      },
+      "/proxy_auth_tokens/inventory/*/created_by": {
+        "operations": [
+          "modal.proxy_tokens.list"
+        ],
+        "code": [
+          {
+            "role": "helper",
+            "line": "internal/collector/collector.go:93",
+            "end": 98
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/tokens.go:47"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:48"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:54"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/tokens.go:57"
+          }
+        ],
+        "gaps": [
+          "internal/collector/tokens.go:49"
+        ]
+      },
+      "/proxy_auth_tokens/inventory/*/environments": {
+        "operations": [
+          "modal.environments.list",
+          "modal.proxy_tokens.environments.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/tokens.go:47"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:48"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/tokens.go:53"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:54"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/tokens.go:55"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/tokens.go:59"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/tokens.go:64"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:66"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/tokens.go:69"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:70"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/tokens.go:71"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:75"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:77"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/tokens.go:78"
+          },
+          {
+            "role": "helper",
+            "line": "internal/collector/tokens.go:88",
+            "end": 105
+          }
+        ],
+        "gaps": [
+          "internal/collector/tokens.go:49",
+          "internal/collector/tokens.go:91",
+          "internal/collector/tokens.go:96"
+        ]
+      },
+      "/proxy_auth_tokens/inventory/*/environments/*": {
+        "operations": [
+          "modal.environments.list",
+          "modal.proxy_tokens.environments.list",
+          "modal.proxy_tokens.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/tokens.go:47"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:48"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/tokens.go:53"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:54"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/tokens.go:55"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/tokens.go:59"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/tokens.go:64"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:66"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/tokens.go:69"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:70"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/tokens.go:71"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:75"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:77"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/tokens.go:78"
+          },
+          {
+            "role": "helper",
+            "line": "internal/collector/tokens.go:88",
+            "end": 105
+          }
+        ],
+        "gaps": [
+          "internal/collector/tokens.go:49",
+          "internal/collector/tokens.go:91",
+          "internal/collector/tokens.go:96"
+        ]
+      },
+      "/proxy_auth_tokens/inventory/*/name": {
+        "operations": [
+          "modal.proxy_tokens.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/tokens.go:47"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:48"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:54"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/tokens.go:56"
+          }
+        ],
+        "gaps": [
+          "internal/collector/tokens.go:49"
+        ]
+      },
+      "/proxy_auth_tokens/inventory/*/scoped": {
+        "operations": [
+          "modal.proxy_tokens.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/tokens.go:47"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:48"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:54"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/tokens.go:59"
+          }
+        ],
+        "gaps": [
+          "internal/collector/tokens.go:49"
+        ]
+      },
+      "/proxy_auth_tokens/total_count": {
+        "operations": [
+          "modal.proxy_tokens.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/tokens.go:47"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:48"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/tokens.go:52"
+          }
+        ],
+        "gaps": [
+          "internal/collector/tokens.go:49"
+        ]
+      },
+      "/proxy_auth_tokens/unscoped_count": {
+        "operations": [
+          "modal.proxy_tokens.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/tokens.go:47"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:48"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:54"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/tokens.go:59"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:61"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/tokens.go:62"
+          }
+        ],
+        "gaps": [
+          "internal/collector/tokens.go:49"
+        ]
+      },
+      "/schema_version": {
+        "code": [
+          {
+            "role": "condition",
+            "line": "internal/collector/collector.go:24"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/collector.go:40"
+          }
+        ]
+      },
+      "/secrets": {
+        "operations": [
+          "modal.environments.list",
+          "modal.secrets.list"
+        ],
+        "code": [
+          {
+            "role": "condition",
+            "line": "internal/collector/collector.go:24"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/collector.go:27"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/collector.go:35"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/collector.go:38"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/collector.go:50"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/collector.go:51"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/collector.go:60"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/collector.go:66"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/collector.go:67"
+          },
+          {
+            "role": "helper",
+            "line": "internal/collector/workloads.go:17",
+            "end": 54
+          }
+        ],
+        "gaps": [
+          "internal/collector/collector.go:62",
+          "internal/collector/workloads.go:23"
+        ]
+      },
+      "/secrets/inventory": {
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:24"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:25"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:29"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:34"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:35"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/workloads.go:19"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:20"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/workloads.go:21"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:22"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:26"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/workloads.go:28"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/workloads.go:44"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:47"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/workloads.go:51"
+          }
+        ]
+      },
+      "/secrets/inventory/*/created_at": {
+        "operations": [
+          "modal.environments.list",
+          "modal.secrets.list"
+        ],
+        "code": [
+          {
+            "role": "helper",
+            "line": "internal/collector/collector.go:84",
+            "end": 90
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:24"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:25"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:29"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:34"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:35"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:20"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/workloads.go:21"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:22"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:26"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/workloads.go:32"
+          },
+          {
+            "role": "helper",
+            "line": "internal/modal/client.go:188",
+            "end": 190
+          }
+        ],
+        "gaps": [
+          "internal/collector/collector.go:62",
+          "internal/collector/workloads.go:23"
+        ]
+      },
+      "/secrets/inventory/*/created_by": {
+        "operations": [
+          "modal.environments.list",
+          "modal.secrets.list"
+        ],
+        "code": [
+          {
+            "role": "helper",
+            "line": "internal/collector/collector.go:93",
+            "end": 98
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:24"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:25"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:29"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:34"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:35"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:20"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/workloads.go:21"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:22"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:26"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/workloads.go:31"
+          }
+        ],
+        "gaps": [
+          "internal/collector/collector.go:62",
+          "internal/collector/workloads.go:23"
+        ]
+      },
+      "/secrets/inventory/*/environment": {
+        "operations": [
+          "modal.environments.list",
+          "modal.secrets.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:24"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:25"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:29"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:34"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:35"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:20"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/workloads.go:21"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:22"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:26"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/workloads.go:30"
+          }
+        ],
+        "gaps": [
+          "internal/collector/collector.go:62",
+          "internal/collector/workloads.go:23"
+        ]
+      },
+      "/secrets/inventory/*/keys/*": {
+        "operations": [
+          "modal.environments.list",
+          "modal.secrets.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:24"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:25"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:29"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:34"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:35"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:20"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/workloads.go:21"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:22"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:26"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/workloads.go:35"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:37"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/workloads.go:38"
+          }
+        ],
+        "gaps": [
+          "internal/collector/collector.go:62",
+          "internal/collector/workloads.go:23"
+        ]
+      },
+      "/secrets/inventory/*/last_used_at": {
+        "operations": [
+          "modal.environments.list",
+          "modal.secrets.list"
+        ],
+        "code": [
+          {
+            "role": "helper",
+            "line": "internal/collector/collector.go:84",
+            "end": 90
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:24"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:25"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:29"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:34"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:35"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:20"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/workloads.go:21"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:22"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:26"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/workloads.go:33"
+          }
+        ],
+        "gaps": [
+          "internal/collector/collector.go:62",
+          "internal/collector/workloads.go:23"
+        ]
+      },
+      "/secrets/inventory/*/name": {
+        "operations": [
+          "modal.environments.list",
+          "modal.secrets.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:24"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:25"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:29"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:34"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:35"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:20"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/workloads.go:21"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:22"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:26"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/workloads.go:29"
+          }
+        ],
+        "gaps": [
+          "internal/collector/collector.go:62",
+          "internal/collector/workloads.go:23"
+        ]
+      },
+      "/secrets/inventory/*/never_used": {
+        "operations": [
+          "modal.environments.list",
+          "modal.secrets.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:24"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:25"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:29"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:34"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:35"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:20"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/workloads.go:21"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:22"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:26"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/workloads.go:34"
+          }
+        ],
+        "gaps": [
+          "internal/collector/collector.go:62",
+          "internal/collector/workloads.go:23"
+        ]
+      },
+      "/secrets/never_used_count": {
+        "operations": [
+          "modal.environments.list",
+          "modal.secrets.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:24"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:25"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:29"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:34"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:35"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:20"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/workloads.go:21"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:22"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:26"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/workloads.go:34"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:41"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/workloads.go:42"
+          }
+        ],
+        "gaps": [
+          "internal/collector/collector.go:62",
+          "internal/collector/workloads.go:23"
+        ]
+      },
+      "/secrets/total_count": {
+        "operations": [
+          "modal.environments.list",
+          "modal.secrets.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:24"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:25"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:29"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/environments.go:34"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/environments.go:35"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:20"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/workloads.go:21"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:22"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/workloads.go:26"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/workloads.go:40"
+          }
+        ],
+        "gaps": [
+          "internal/collector/collector.go:62",
+          "internal/collector/workloads.go:23"
+        ]
+      },
+      "/service_users": {
+        "operations": [
+          "modal.service_users.list"
+        ],
+        "code": [
+          {
+            "role": "condition",
+            "line": "internal/collector/collector.go:24"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/collector.go:27"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/collector.go:35"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/collector.go:38"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/collector.go:55"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/collector.go:56"
+          },
+          {
+            "role": "helper",
+            "line": "internal/collector/tokens.go:14",
+            "end": 40
+          }
+        ],
+        "gaps": [
+          "internal/collector/tokens.go:17"
+        ]
+      },
+      "/service_users/inventory": {
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/tokens.go:15"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:16"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/tokens.go:21"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:22"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/tokens.go:23"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/tokens.go:33"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:35"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/tokens.go:37"
+          }
+        ]
+      },
+      "/service_users/inventory/*/created_at": {
+        "operations": [
+          "modal.service_users.list"
+        ],
+        "code": [
+          {
+            "role": "helper",
+            "line": "internal/collector/collector.go:84",
+            "end": 90
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/tokens.go:15"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:16"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:22"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/tokens.go:26"
+          }
+        ],
+        "gaps": [
+          "internal/collector/tokens.go:17"
+        ]
+      },
+      "/service_users/inventory/*/created_by": {
+        "operations": [
+          "modal.service_users.list"
+        ],
+        "code": [
+          {
+            "role": "helper",
+            "line": "internal/collector/collector.go:93",
+            "end": 98
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/tokens.go:15"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:16"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:22"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/tokens.go:25"
+          }
+        ],
+        "gaps": [
+          "internal/collector/tokens.go:17"
+        ]
+      },
+      "/service_users/inventory/*/last_used_at": {
+        "operations": [
+          "modal.service_users.list"
+        ],
+        "code": [
+          {
+            "role": "helper",
+            "line": "internal/collector/collector.go:84",
+            "end": 90
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/tokens.go:15"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:16"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:22"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/tokens.go:27"
+          }
+        ],
+        "gaps": [
+          "internal/collector/tokens.go:17"
+        ]
+      },
+      "/service_users/inventory/*/name": {
+        "operations": [
+          "modal.service_users.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/tokens.go:15"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:16"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:22"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/tokens.go:24"
+          }
+        ],
+        "gaps": [
+          "internal/collector/tokens.go:17"
+        ]
+      },
+      "/service_users/inventory/*/never_used": {
+        "operations": [
+          "modal.service_users.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/tokens.go:15"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:16"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:22"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/tokens.go:28"
+          }
+        ],
+        "gaps": [
+          "internal/collector/tokens.go:17"
+        ]
+      },
+      "/service_users/never_used_count": {
+        "operations": [
+          "modal.service_users.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/tokens.go:15"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:16"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:22"
+          },
+          {
+            "role": "input",
+            "line": "internal/collector/tokens.go:28"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:30"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/tokens.go:31"
+          }
+        ],
+        "gaps": [
+          "internal/collector/tokens.go:17"
+        ]
+      },
+      "/service_users/total_count": {
+        "operations": [
+          "modal.service_users.list"
+        ],
+        "code": [
+          {
+            "role": "input",
+            "line": "internal/collector/tokens.go:15"
+          },
+          {
+            "role": "condition",
+            "line": "internal/collector/tokens.go:16"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/tokens.go:20"
+          }
+        ],
+        "gaps": [
+          "internal/collector/tokens.go:17"
+        ]
+      },
+      "/workspace/id": {
+        "code": [
+          {
+            "role": "condition",
+            "line": "internal/collector/collector.go:24"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/collector.go:43"
+          }
+        ]
+      },
+      "/workspace/name": {
+        "code": [
+          {
+            "role": "condition",
+            "line": "internal/collector/collector.go:24"
+          },
+          {
+            "role": "assign",
+            "line": "internal/collector/collector.go:43"
+          }
+        ]
+      }
+    }
+  },
+  "lines": {
+    "internal/collector/collector.go:24": "\tif err != nil {",
+    "internal/collector/collector.go:27": "\trec := componentsdk.Records(ctx)",
+    "internal/collector/collector.go:35": "\tgaps := gapLog{rec: rec}",
+    "internal/collector/collector.go:37": "\tnow := componentsdk.Now(ctx).UTC()",
+    "internal/collector/collector.go:38": "\tinventories := ctx.Level().AtLeast(componentsdk.LevelAudit)",
+    "internal/collector/collector.go:40": "\t\tSchemaVersion:    SchemaVersion,",
+    "internal/collector/collector.go:41": "\t\tCollectedAt:      now.Format(time.RFC3339),",
+    "internal/collector/collector.go:42": "\t\tCollectedAtLevel: string(ctx.Level()),",
+    "internal/collector/collector.go:43": "\t\tWorkspace:        Workspace{ID: token.GetWorkspaceId(), Name: token.GetWorkspaceName()},",
+    "internal/collector/collector.go:46": "\tpeople, step := componentsdk.StartCollectorStep(ctx, \"members\", \"Members\")",
+    "internal/collector/collector.go:47": "\tout.Members = readMembers(people, client, gaps, now, inventories)",
+    "internal/collector/collector.go:50": "\tenvs, step := componentsdk.StartCollectorStep(ctx, \"environments\", \"Environments\")",
+    "internal/collector/collector.go:51": "\tenvironments, listed, envErr := readEnvironments(envs, client, gaps, inventories)",
+    "internal/collector/collector.go:52": "\tout.Environments = environments",
+    "internal/collector/collector.go:55": "\ttokens, step := componentsdk.StartCollectorStep(ctx, \"tokens\", \"Service users and proxy auth tokens\")",
+    "internal/collector/collector.go:56": "\tout.ServiceUsers = readServiceUsers(tokens, client, gaps, inventories)",
+    "internal/collector/collector.go:57": "\tout.ProxyAuthTokens = readProxyTokens(tokens, client, gaps, listed, envErr, inventories)",
+    "internal/collector/collector.go:60": "\tif envErr != nil {",
+    "internal/collector/collector.go:62": "\t\tgaps.notCollected(err, \"/secrets\")",
+    "internal/collector/collector.go:63": "\t\tgaps.notCollected(err, \"/apps\")",
+    "internal/collector/collector.go:66": "\tworkloads, step := componentsdk.StartCollectorStep(ctx, \"workloads\", \"Secrets and apps\")",
+    "internal/collector/collector.go:67": "\tout.Secrets = readSecrets(workloads, client, gaps, listed, inventories)",
+    "internal/collector/collector.go:68": "\tout.Apps = readApps(workloads, client, gaps, listed, inventories)",
+    "internal/collector/collector.go:84": "func timestamp(seconds float64) *string {",
+    "internal/collector/collector.go:85": "\tif seconds \u003c= 0 {",
+    "internal/collector/collector.go:86": "\t\treturn nil",
+    "internal/collector/collector.go:87": "\t}",
+    "internal/collector/collector.go:88": "\ts := time.Unix(int64(seconds), 0).UTC().Format(time.RFC3339)",
+    "internal/collector/collector.go:89": "\treturn \u0026s",
+    "internal/collector/collector.go:90": "}",
+    "internal/collector/collector.go:93": "func optional(s string) *string {",
+    "internal/collector/collector.go:94": "\tif s == \"\" {",
+    "internal/collector/collector.go:95": "\t\treturn nil",
+    "internal/collector/collector.go:96": "\t}",
+    "internal/collector/collector.go:97": "\treturn \u0026s",
+    "internal/collector/collector.go:98": "}",
+    "internal/collector/collector.go:100": "func environmentRoleName(role pb.EnvironmentRole) string {",
+    "internal/collector/collector.go:101": "\tswitch role {",
+    "internal/collector/collector.go:102": "\tcase pb.EnvironmentRole_ENVIRONMENT_ROLE_CONTRIBUTOR:",
+    "internal/collector/collector.go:103": "\t\treturn \"contributor\"",
+    "internal/collector/collector.go:104": "\tcase pb.EnvironmentRole_ENVIRONMENT_ROLE_VIEWER:",
+    "internal/collector/collector.go:105": "\t\treturn \"viewer\"",
+    "internal/collector/collector.go:106": "\tcase pb.EnvironmentRole_ENVIRONMENT_ROLE_NO_ACCESS:",
+    "internal/collector/collector.go:107": "\t\treturn \"no_access\"",
+    "internal/collector/collector.go:108": "\tcase pb.EnvironmentRole_ENVIRONMENT_ROLE_MODAL_ADMINISTERED_OBSERVER:",
+    "internal/collector/collector.go:109": "\t\treturn \"modal_observer\"",
+    "internal/collector/collector.go:110": "\tdefault:",
+    "internal/collector/collector.go:111": "\t\treturn \"other\"",
+    "internal/collector/collector.go:112": "\t}",
+    "internal/collector/collector.go:113": "}",
+    "internal/collector/environments.go:24": "\titems, err := client.ListEnvironments(ctx.Context())",
+    "internal/collector/environments.go:25": "\tif err != nil {",
+    "internal/collector/environments.go:26": "\t\tgaps.notCollected(err, \"/environments\")",
+    "internal/collector/environments.go:29": "\titems = slices.Clone(items)",
+    "internal/collector/environments.go:31": "\tout := \u0026Environments{TotalCount: len(items)}",
+    "internal/collector/environments.go:34": "\tfor i, item := range items {",
+    "internal/collector/environments.go:35": "\t\trefs = append(refs, environmentRef{ID: item.GetEnvironmentId(), Name: item.GetName()})",
+    "internal/collector/environments.go:37": "\t\t\tName:       item.GetName(),",
+    "internal/collector/environments.go:38": "\t\t\tDefault:    item.GetDefault(),",
+    "internal/collector/environments.go:39": "\t\t\tRestricted: item.GetIsManaged(),",
+    "internal/collector/environments.go:40": "\t\t\tCreatedAt:  timestamp(item.GetCreatedAt()),",
+    "internal/collector/environments.go:42": "\t\tif item.HasDefaultMemberRole() {",
+    "internal/collector/environments.go:43": "\t\t\trole := environmentRoleName(item.GetDefaultMemberRole())",
+    "internal/collector/environments.go:44": "\t\t\trow.DefaultMemberRole = \u0026role",
+    "internal/collector/environments.go:46": "\t\tif item.HasBlockUnauthenticatedResources() {",
+    "internal/collector/environments.go:47": "\t\t\tblocks := item.GetBlockUnauthenticatedResources()",
+    "internal/collector/environments.go:48": "\t\t\trow.BlocksUnauthenticated = \u0026blocks",
+    "internal/collector/environments.go:50": "\t\tif row.Restricted {",
+    "internal/collector/environments.go:51": "\t\t\tout.RestrictedCount++",
+    "internal/collector/environments.go:52": "\t\t\tif inventories {",
+    "internal/collector/environments.go:53": "\t\t\t\trow.Roles = readEnvironmentRoles(ctx, client, gaps, item, i)",
+    "internal/collector/environments.go:68": "func readEnvironmentRoles(ctx componentsdk.CollectorContext, client *modal.Client, gaps gapLog, item *pb.EnvironmentListItem, index int) []RoleGrant {",
+    "internal/collector/environments.go:69": "\tresp, err := client.EnvironmentRoles(ctx.Context(), item.GetEnvironmentId())",
+    "internal/collector/environments.go:70": "\tif err != nil {",
+    "internal/collector/environments.go:71": "\t\tgaps.notCollected(err, fmt.Sprintf(\"/environments/inventory/%d/roles\", index))",
+    "internal/collector/environments.go:72": "\t\treturn nil",
+    "internal/collector/environments.go:73": "\t}",
+    "internal/collector/environments.go:74": "\tgrants := []RoleGrant{}",
+    "internal/collector/environments.go:75": "\tfor _, p := range resp.GetPrincipalRoles() {",
+    "internal/collector/environments.go:76": "\t\tif p.HasInheritsDefaultMemberRole() \u0026\u0026 p.GetInheritsDefaultMemberRole() {",
+    "internal/collector/environments.go:77": "\t\t\tcontinue",
+    "internal/collector/environments.go:78": "\t\t}",
+    "internal/collector/environments.go:79": "\t\tgrant := RoleGrant{Role: environmentRoleName(p.GetRole())}",
+    "internal/collector/environments.go:80": "\t\tif p.GetRoleStr() != \"\" {",
+    "internal/collector/environments.go:81": "\t\t\tgrant.Role = p.GetRoleStr()",
+    "internal/collector/environments.go:82": "\t\t}",
+    "internal/collector/environments.go:83": "\t\tswitch {",
+    "internal/collector/environments.go:84": "\t\tcase p.GetServiceUserId() != \"\":",
+    "internal/collector/environments.go:85": "\t\t\tgrant.Kind, grant.Principal = \"service_user\", p.GetServiceUserName()",
+    "internal/collector/environments.go:86": "\t\tdefault:",
+    "internal/collector/environments.go:87": "\t\t\tgrant.Kind, grant.Principal = \"member\", cmp.Or(p.GetEmail(), p.GetUserName())",
+    "internal/collector/environments.go:88": "\t\t}",
+    "internal/collector/environments.go:89": "\t\tgrants = append(grants, grant)",
+    "internal/collector/environments.go:90": "\t}",
+    "internal/collector/environments.go:91": "\tslices.SortStableFunc(grants, func(a, b RoleGrant) int {",
+    "internal/collector/environments.go:92": "\t\treturn cmp.Or(cmp.Compare(a.Kind, b.Kind), cmp.Compare(a.Principal, b.Principal))",
+    "internal/collector/environments.go:93": "\t})",
+    "internal/collector/environments.go:94": "\treturn grants",
+    "internal/collector/environments.go:95": "}",
+    "internal/collector/members.go:20": "func readMembers(ctx componentsdk.CollectorContext, client *modal.Client, gaps gapLog, now time.Time, inventories bool) *Members {",
+    "internal/collector/members.go:21": "\tmembers, err := client.ListMembers(ctx.Context())",
+    "internal/collector/members.go:22": "\tif err != nil {",
+    "internal/collector/members.go:23": "\t\tvar opts []componentsdk.GapOption",
+    "internal/collector/members.go:24": "\t\tif componentsdk.Classify(err) == componentsdk.CodePermissionDenied {",
+    "internal/collector/members.go:25": "\t\t\topts = append(opts, componentsdk.MissingPermission(modal.RoleManager), componentsdk.Warning(membersRefusedWarning))",
+    "internal/collector/members.go:26": "\t\t}",
+    "internal/collector/members.go:27": "\t\tgaps.notCollected(err, \"/members\", opts...)",
+    "internal/collector/members.go:28": "\t\treturn nil",
+    "internal/collector/members.go:29": "\t}",
+    "internal/collector/members.go:30": "\tout := \u0026Members{}",
+    "internal/collector/members.go:31": "\trows := []Member{}",
+    "internal/collector/members.go:32": "\tcutoff := now.Add(-inactiveDays * 24 * time.Hour)",
+    "internal/collector/members.go:33": "\tfor _, m := range members {",
+    "internal/collector/members.go:34": "\t\tif m.GetDeletedAt() \u003e 0 {",
+    "internal/collector/members.go:35": "\t\t\tcontinue",
+    "internal/collector/members.go:36": "\t\t}",
+    "internal/collector/members.go:37": "\t\trow := Member{",
+    "internal/collector/members.go:38": "\t\t\tName:         m.GetMemberDisplayname(),",
+    "internal/collector/members.go:39": "\t\t\tEmail:        strings.ToLower(m.GetEmail()),",
+    "internal/collector/members.go:40": "\t\t\tRole:         memberRoleName(m.GetMemberRole()),",
+    "internal/collector/members.go:41": "\t\t\tSignIn:       signInName(m.GetIdentityProviderType()),",
+    "internal/collector/members.go:42": "\t\t\tJoinedAt:     timestamp(m.GetJoinedAt()),",
+    "internal/collector/members.go:43": "\t\t\tLastActiveAt: timestamp(m.GetLastActiveAt()),",
+    "internal/collector/members.go:44": "\t\t}",
+    "internal/collector/members.go:45": "\t\trow.Inactive = m.GetLastActiveAt() \u003c= 0 || time.Unix(int64(m.GetLastActiveAt()), 0).Before(cutoff)",
+    "internal/collector/members.go:46": "\t\tout.TotalCount++",
+    "internal/collector/members.go:47": "\t\tswitch row.Role {",
+    "internal/collector/members.go:48": "\t\tcase \"owner\":",
+    "internal/collector/members.go:49": "\t\t\tout.OwnerCount++",
+    "internal/collector/members.go:50": "\t\tcase \"manager\":",
+    "internal/collector/members.go:51": "\t\t\tout.ManagerCount++",
+    "internal/collector/members.go:52": "\t\tcase \"member\":",
+    "internal/collector/members.go:53": "\t\t\tout.MemberCount++",
+    "internal/collector/members.go:54": "\t\t}",
+    "internal/collector/members.go:55": "\t\tswitch row.SignIn {",
+    "internal/collector/members.go:56": "\t\tcase \"github\":",
+    "internal/collector/members.go:57": "\t\t\tout.SignIn.GitHubCount++",
+    "internal/collector/members.go:58": "\t\tcase \"google\":",
+    "internal/collector/members.go:59": "\t\t\tout.SignIn.GoogleCount++",
+    "internal/collector/members.go:60": "\t\tcase \"saml\":",
+    "internal/collector/members.go:61": "\t\t\tout.SignIn.SAMLCount++",
+    "internal/collector/members.go:62": "\t\tdefault:",
+    "internal/collector/members.go:63": "\t\t\tout.SignIn.OtherCount++",
+    "internal/collector/members.go:64": "\t\t}",
+    "internal/collector/members.go:65": "\t\tif row.Inactive {",
+    "internal/collector/members.go:66": "\t\t\tout.InactiveCount++",
+    "internal/collector/members.go:67": "\t\t}",
+    "internal/collector/members.go:68": "\t\trows = append(rows, row)",
+    "internal/collector/members.go:69": "\t}",
+    "internal/collector/members.go:70": "\tif inventories {",
+    "internal/collector/members.go:71": "\t\tslices.SortStableFunc(rows, func(a, b Member) int { return cmp.Or(cmp.Compare(a.Email, b.Email), cmp.Compare(a.Name, b.Name)) })",
+    "internal/collector/members.go:72": "\t\tout.Inventory = rows",
+    "internal/collector/members.go:73": "\t}",
+    "internal/collector/members.go:74": "\treturn out",
+    "internal/collector/members.go:75": "}",
+    "internal/collector/members.go:77": "func memberRoleName(role pb.MemberRole) string {",
+    "internal/collector/members.go:78": "\tswitch role {",
+    "internal/collector/members.go:79": "\tcase pb.MemberRole_MEMBER_ROLE_OWNER:",
+    "internal/collector/members.go:80": "\t\treturn \"owner\"",
+    "internal/collector/members.go:81": "\tcase pb.MemberRole_MEMBER_ROLE_MANAGER:",
+    "internal/collector/members.go:82": "\t\treturn \"manager\"",
+    "internal/collector/members.go:83": "\tcase pb.MemberRole_MEMBER_ROLE_USER:",
+    "internal/collector/members.go:84": "\t\treturn \"member\"",
+    "internal/collector/members.go:85": "\tdefault:",
+    "internal/collector/members.go:86": "\t\treturn \"other\"",
+    "internal/collector/members.go:87": "\t}",
+    "internal/collector/members.go:88": "}",
+    "internal/collector/members.go:90": "func signInName(provider pb.IdentityProviderType) string {",
+    "internal/collector/members.go:91": "\tswitch provider {",
+    "internal/collector/members.go:92": "\tcase pb.IdentityProviderType_IDENTITY_PROVIDER_TYPE_GITHUB:",
+    "internal/collector/members.go:93": "\t\treturn \"github\"",
+    "internal/collector/members.go:94": "\tcase pb.IdentityProviderType_IDENTITY_PROVIDER_TYPE_GOOGLE_OAUTH:",
+    "internal/collector/members.go:95": "\t\treturn \"google\"",
+    "internal/collector/members.go:96": "\tcase pb.IdentityProviderType_IDENTITY_PROVIDER_TYPE_SAML:",
+    "internal/collector/members.go:97": "\t\treturn \"saml\"",
+    "internal/collector/members.go:98": "\tdefault:",
+    "internal/collector/members.go:99": "\t\treturn \"other\"",
+    "internal/collector/members.go:100": "\t}",
+    "internal/collector/members.go:101": "}",
+    "internal/collector/tokens.go:14": "func readServiceUsers(ctx componentsdk.CollectorContext, client *modal.Client, gaps gapLog, inventories bool) *ServiceUsers {",
+    "internal/collector/tokens.go:15": "\tusers, err := client.ListServiceUsers(ctx.Context())",
+    "internal/collector/tokens.go:16": "\tif err != nil {",
+    "internal/collector/tokens.go:17": "\t\tgaps.notCollected(err, \"/service_users\")",
+    "internal/collector/tokens.go:18": "\t\treturn nil",
+    "internal/collector/tokens.go:19": "\t}",
+    "internal/collector/tokens.go:20": "\tout := \u0026ServiceUsers{TotalCount: len(users)}",
+    "internal/collector/tokens.go:21": "\trows := make([]ServiceUser, 0, len(users))",
+    "internal/collector/tokens.go:22": "\tfor _, u := range users {",
+    "internal/collector/tokens.go:23": "\t\trow := ServiceUser{",
+    "internal/collector/tokens.go:24": "\t\t\tName:       u.GetName(),",
+    "internal/collector/tokens.go:25": "\t\t\tCreatedBy:  optional(u.GetCreatedBy()),",
+    "internal/collector/tokens.go:26": "\t\t\tCreatedAt:  timestamp(u.GetCreatedAt()),",
+    "internal/collector/tokens.go:27": "\t\t\tLastUsedAt: timestamp(u.GetLastUsedAt()),",
+    "internal/collector/tokens.go:28": "\t\t\tNeverUsed:  u.GetLastUsedAt() \u003c= 0,",
+    "internal/collector/tokens.go:29": "\t\t}",
+    "internal/collector/tokens.go:30": "\t\tif row.NeverUsed {",
+    "internal/collector/tokens.go:31": "\t\t\tout.NeverUsedCount++",
+    "internal/collector/tokens.go:32": "\t\t}",
+    "internal/collector/tokens.go:33": "\t\trows = append(rows, row)",
+    "internal/collector/tokens.go:34": "\t}",
+    "internal/collector/tokens.go:35": "\tif inventories {",
+    "internal/collector/tokens.go:36": "\t\tslices.SortStableFunc(rows, func(a, b ServiceUser) int { return cmp.Compare(a.Name, b.Name) })",
+    "internal/collector/tokens.go:37": "\t\tout.Inventory = rows",
+    "internal/collector/tokens.go:38": "\t}",
+    "internal/collector/tokens.go:39": "\treturn out",
+    "internal/collector/tokens.go:40": "}",
+    "internal/collector/tokens.go:46": "func readProxyTokens(ctx componentsdk.CollectorContext, client *modal.Client, gaps gapLog, envs []environmentRef, envErr error, inventories bool) *ProxyAuthTokens {",
+    "internal/collector/tokens.go:47": "\ttokens, err := client.ListProxyTokens(ctx.Context())",
+    "internal/collector/tokens.go:48": "\tif err != nil {",
+    "internal/collector/tokens.go:49": "\t\tgaps.notCollected(err, \"/proxy_auth_tokens\")",
+    "internal/collector/tokens.go:50": "\t\treturn nil",
+    "internal/collector/tokens.go:51": "\t}",
+    "internal/collector/tokens.go:52": "\tout := \u0026ProxyAuthTokens{TotalCount: len(tokens)}",
+    "internal/collector/tokens.go:53": "\trows := make([]ProxyAuthToken, 0, len(tokens))",
+    "internal/collector/tokens.go:54": "\tfor _, t := range tokens {",
+    "internal/collector/tokens.go:55": "\t\trow := ProxyAuthToken{",
+    "internal/collector/tokens.go:56": "\t\t\tName:      t.GetName(),",
+    "internal/collector/tokens.go:57": "\t\t\tCreatedBy: optional(t.GetCreatedBy().GetUsername()),",
+    "internal/collector/tokens.go:58": "\t\t\tCreatedAt: timestamp(t.GetCreatedAt()),",
+    "internal/collector/tokens.go:59": "\t\t\tScoped:    t.GetScoped(),",
+    "internal/collector/tokens.go:60": "\t\t}",
+    "internal/collector/tokens.go:61": "\t\tif !row.Scoped {",
+    "internal/collector/tokens.go:62": "\t\t\tout.UnscopedCount++",
+    "internal/collector/tokens.go:63": "\t\t}",
+    "internal/collector/tokens.go:64": "\t\trows = append(rows, row)",
+    "internal/collector/tokens.go:65": "\t}",
+    "internal/collector/tokens.go:66": "\tif !inventories {",
+    "internal/collector/tokens.go:67": "\t\treturn out",
+    "internal/collector/tokens.go:68": "\t}",
+    "internal/collector/tokens.go:69": "\torder := make([]int, len(rows))",
+    "internal/collector/tokens.go:70": "\tfor i := range order {",
+    "internal/collector/tokens.go:71": "\t\torder[i] = i",
+    "internal/collector/tokens.go:72": "\t}",
+    "internal/collector/tokens.go:73": "\tslices.SortStableFunc(order, func(a, b int) int { return cmp.Compare(rows[a].Name, rows[b].Name) })",
+    "internal/collector/tokens.go:74": "\tsorted := make([]ProxyAuthToken, len(rows))",
+    "internal/collector/tokens.go:75": "\tfor at, i := range order {",
+    "internal/collector/tokens.go:76": "\t\trow := rows[i]",
+    "internal/collector/tokens.go:77": "\t\tif row.Scoped {",
+    "internal/collector/tokens.go:78": "\t\t\trow.Environments = scopedEnvironments(ctx, client, gaps, tokens[i].GetTokenId(), envs, envErr, at)",
+    "internal/collector/tokens.go:79": "\t\t}",
+    "internal/collector/tokens.go:80": "\t\tsorted[at] = row",
+    "internal/collector/tokens.go:81": "\t}",
+    "internal/collector/tokens.go:82": "\tout.Inventory = sorted",
+    "internal/collector/tokens.go:83": "\treturn out",
+    "internal/collector/tokens.go:84": "}",
+    "internal/collector/tokens.go:88": "func scopedEnvironments(ctx componentsdk.CollectorContext, client *modal.Client, gaps gapLog, tokenID string, envs []environmentRef, envErr error, index int) []string {",
+    "internal/collector/tokens.go:89": "\tpointer := fmt.Sprintf(\"/proxy_auth_tokens/inventory/%d/environments\", index)",
+    "internal/collector/tokens.go:90": "\tif envErr != nil {",
+    "internal/collector/tokens.go:91": "\t\tgaps.notCollected(fmt.Errorf(\"a scoped token's environments are named from the environment list: %w\", envErr), pointer)",
+    "internal/collector/tokens.go:92": "\t\treturn nil",
+    "internal/collector/tokens.go:93": "\t}",
+    "internal/collector/tokens.go:94": "\tids, err := client.ProxyTokenEnvironments(ctx.Context(), tokenID)",
+    "internal/collector/tokens.go:95": "\tif err != nil {",
+    "internal/collector/tokens.go:96": "\t\tgaps.notCollected(err, pointer)",
+    "internal/collector/tokens.go:97": "\t\treturn nil",
+    "internal/collector/tokens.go:98": "\t}",
+    "internal/collector/tokens.go:99": "\tnames := make([]string, 0, len(ids))",
+    "internal/collector/tokens.go:100": "\tfor _, id := range ids {",
+    "internal/collector/tokens.go:101": "\t\tnames = append(names, environmentName(envs, id))",
+    "internal/collector/tokens.go:102": "\t}",
+    "internal/collector/tokens.go:103": "\tslices.Sort(names)",
+    "internal/collector/tokens.go:104": "\treturn names",
+    "internal/collector/tokens.go:105": "}",
+    "internal/collector/workloads.go:17": "func readSecrets(ctx componentsdk.CollectorContext, client *modal.Client, gaps gapLog, envs []environmentRef, inventories bool) *Secrets {",
+    "internal/collector/workloads.go:18": "\tout := \u0026Secrets{}",
+    "internal/collector/workloads.go:19": "\trows := []Secret{}",
+    "internal/collector/workloads.go:20": "\tfor _, env := range envs {",
+    "internal/collector/workloads.go:21": "\t\titems, err := client.ListSecrets(ctx.Context(), env.Name)",
+    "internal/collector/workloads.go:22": "\t\tif err != nil {",
+    "internal/collector/workloads.go:23": "\t\t\tgaps.notCollected(fmt.Errorf(\"the %s environment: %w\", env.Name, err), \"/secrets\")",
+    "internal/collector/workloads.go:24": "\t\t\treturn nil",
+    "internal/collector/workloads.go:25": "\t\t}",
+    "internal/collector/workloads.go:26": "\t\tfor _, item := range items {",
+    "internal/collector/workloads.go:27": "\t\t\tmeta := item.GetMetadata()",
+    "internal/collector/workloads.go:28": "\t\t\trow := Secret{",
+    "internal/collector/workloads.go:29": "\t\t\t\tName:        cmp.Or(meta.GetName(), item.GetLabel()),",
+    "internal/collector/workloads.go:30": "\t\t\t\tEnvironment: env.Name,",
+    "internal/collector/workloads.go:31": "\t\t\t\tCreatedBy:   optional(meta.GetCreationInfo().GetCreatedBy()),",
+    "internal/collector/workloads.go:32": "\t\t\t\tCreatedAt:   timestamp(modal.SecretCreatedAt(item)),",
+    "internal/collector/workloads.go:33": "\t\t\t\tLastUsedAt:  timestamp(item.GetLastUsedAt()),",
+    "internal/collector/workloads.go:34": "\t\t\t\tNeverUsed:   item.GetLastUsedAt() \u003c= 0,",
+    "internal/collector/workloads.go:35": "\t\t\t\tKeys:        slices.Sorted(slices.Values(meta.GetKeys())),",
+    "internal/collector/workloads.go:36": "\t\t\t}",
+    "internal/collector/workloads.go:37": "\t\t\tif row.Keys == nil {",
+    "internal/collector/workloads.go:38": "\t\t\t\trow.Keys = []string{}",
+    "internal/collector/workloads.go:39": "\t\t\t}",
+    "internal/collector/workloads.go:40": "\t\t\tout.TotalCount++",
+    "internal/collector/workloads.go:41": "\t\t\tif row.NeverUsed {",
+    "internal/collector/workloads.go:42": "\t\t\t\tout.NeverUsedCount++",
+    "internal/collector/workloads.go:43": "\t\t\t}",
+    "internal/collector/workloads.go:44": "\t\t\trows = append(rows, row)",
+    "internal/collector/workloads.go:45": "\t\t}",
+    "internal/collector/workloads.go:46": "\t}",
+    "internal/collector/workloads.go:47": "\tif inventories {",
+    "internal/collector/workloads.go:48": "\t\tslices.SortStableFunc(rows, func(a, b Secret) int {",
+    "internal/collector/workloads.go:49": "\t\t\treturn cmp.Or(cmp.Compare(a.Environment, b.Environment), cmp.Compare(a.Name, b.Name))",
+    "internal/collector/workloads.go:50": "\t\t})",
+    "internal/collector/workloads.go:51": "\t\tout.Inventory = rows",
+    "internal/collector/workloads.go:52": "\t}",
+    "internal/collector/workloads.go:53": "\treturn out",
+    "internal/collector/workloads.go:54": "}",
+    "internal/collector/workloads.go:60": "func readApps(ctx componentsdk.CollectorContext, client *modal.Client, gaps gapLog, envs []environmentRef, inventories bool) *Apps {",
+    "internal/collector/workloads.go:61": "\tout := \u0026Apps{}",
+    "internal/collector/workloads.go:62": "\trows := []App{}",
+    "internal/collector/workloads.go:63": "\tfor _, env := range envs {",
+    "internal/collector/workloads.go:64": "\t\tapps, err := client.ListApps(ctx.Context(), env.Name)",
+    "internal/collector/workloads.go:65": "\t\tif err != nil {",
+    "internal/collector/workloads.go:66": "\t\t\tgaps.notCollected(fmt.Errorf(\"the %s environment: %w\", env.Name, err), \"/apps\")",
+    "internal/collector/workloads.go:67": "\t\t\treturn nil",
+    "internal/collector/workloads.go:68": "\t\t}",
+    "internal/collector/workloads.go:69": "\t\tfor _, app := range apps {",
+    "internal/collector/workloads.go:70": "\t\t\trow := App{",
+    "internal/collector/workloads.go:71": "\t\t\t\tName:        app.GetName(),",
+    "internal/collector/workloads.go:72": "\t\t\t\tEnvironment: env.Name,",
+    "internal/collector/workloads.go:73": "\t\t\t\tState:       appStateName(app.GetState()),",
+    "internal/collector/workloads.go:74": "\t\t\t\tCreatedAt:   timestamp(app.GetCreatedAt()),",
+    "internal/collector/workloads.go:75": "\t\t\t}",
+    "internal/collector/workloads.go:76": "\t\t\tif app.GetState() == pb.AppState_APP_STATE_DEPLOYED {",
+    "internal/collector/workloads.go:77": "\t\t\t\tinfo, err := client.AppInfo(ctx.Context(), app.GetAppId())",
+    "internal/collector/workloads.go:78": "\t\t\t\tif err != nil {",
+    "internal/collector/workloads.go:79": "\t\t\t\t\tgaps.notCollected(fmt.Errorf(\"the %s app in the %s environment: %w\", app.GetName(), env.Name, err), \"/apps\")",
+    "internal/collector/workloads.go:80": "\t\t\t\t\treturn nil",
+    "internal/collector/workloads.go:81": "\t\t\t\t}",
+    "internal/collector/workloads.go:82": "\t\t\t\tweb, unauthenticated, scheduled := countFunctions(info)",
+    "internal/collector/workloads.go:83": "\t\t\t\trow.WebEndpoints, row.UnauthenticatedEndpoints, row.ScheduledFunctions = \u0026web, \u0026unauthenticated, \u0026scheduled",
+    "internal/collector/workloads.go:84": "\t\t\t\tout.DeployedCount++",
+    "internal/collector/workloads.go:85": "\t\t\t\tout.WebEndpointCount += web",
+    "internal/collector/workloads.go:86": "\t\t\t\tout.UnauthenticatedEndpointCount += unauthenticated",
+    "internal/collector/workloads.go:87": "\t\t\t\tout.ScheduledFunctionCount += scheduled",
+    "internal/collector/workloads.go:88": "\t\t\t}",
+    "internal/collector/workloads.go:89": "\t\t\trows = append(rows, row)",
+    "internal/collector/workloads.go:90": "\t\t}",
+    "internal/collector/workloads.go:91": "\t}",
+    "internal/collector/workloads.go:92": "\tif inventories {",
+    "internal/collector/workloads.go:93": "\t\tslices.SortStableFunc(rows, func(a, b App) int {",
+    "internal/collector/workloads.go:94": "\t\t\treturn cmp.Or(cmp.Compare(a.Environment, b.Environment), cmp.Compare(a.Name, b.Name))",
+    "internal/collector/workloads.go:95": "\t\t})",
+    "internal/collector/workloads.go:96": "\t\tout.Inventory = rows",
+    "internal/collector/workloads.go:97": "\t}",
+    "internal/collector/workloads.go:98": "\treturn out",
+    "internal/collector/workloads.go:99": "}",
+    "internal/collector/workloads.go:120": "func appStateName(state pb.AppState) string {",
+    "internal/collector/workloads.go:121": "\tswitch state {",
+    "internal/collector/workloads.go:122": "\tcase pb.AppState_APP_STATE_DEPLOYED:",
+    "internal/collector/workloads.go:123": "\t\treturn \"deployed\"",
+    "internal/collector/workloads.go:124": "\tcase pb.AppState_APP_STATE_EPHEMERAL:",
+    "internal/collector/workloads.go:125": "\t\treturn \"ephemeral\"",
+    "internal/collector/workloads.go:126": "\tcase pb.AppState_APP_STATE_DETACHED, pb.AppState_APP_STATE_DETACHED_DISCONNECTED:",
+    "internal/collector/workloads.go:127": "\t\treturn \"detached\"",
+    "internal/collector/workloads.go:128": "\tcase pb.AppState_APP_STATE_STOPPING:",
+    "internal/collector/workloads.go:129": "\t\treturn \"stopping\"",
+    "internal/collector/workloads.go:130": "\tcase pb.AppState_APP_STATE_STOPPED:",
+    "internal/collector/workloads.go:131": "\t\treturn \"stopped\"",
+    "internal/collector/workloads.go:132": "\tcase pb.AppState_APP_STATE_INITIALIZING:",
+    "internal/collector/workloads.go:133": "\t\treturn \"initializing\"",
+    "internal/collector/workloads.go:134": "\tcase pb.AppState_APP_STATE_DISABLED:",
+    "internal/collector/workloads.go:135": "\t\treturn \"disabled\"",
+    "internal/collector/workloads.go:136": "\tdefault:",
+    "internal/collector/workloads.go:137": "\t\treturn \"other\"",
+    "internal/collector/workloads.go:138": "\t}",
+    "internal/collector/workloads.go:139": "}",
+    "internal/modal/client.go:188": "func SecretCreatedAt(item *pb.SecretListItem) float64 {",
+    "internal/modal/client.go:189": "\treturn createdAt(item)",
+    "internal/modal/client.go:190": "}"
+  }
+}

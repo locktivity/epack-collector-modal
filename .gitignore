@@ -1,0 +1,29 @@
+# Binaries (at repo root only)
+/epack-collector-modal
+/epack-collector-modal.exe
+/epack-collector-modal-*
+/bin/
+
+# Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+go.work
+go.work.sum
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# GoReleaser
+dist/

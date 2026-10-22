@@ -1,0 +1,518 @@
+{
+  "name": "modal",
+  "recorded_at": "2026-10-22T20:33:07Z",
+  "collector": "modal",
+  "collector_version": "record",
+  "config": {
+    "level": "audit"
+  },
+  "responses": [
+    {
+      "operation": "modal.token.info",
+      "method": "POST",
+      "url": "https://api.modal.com/modal.client.ModalClient/TokenInfoGet?",
+      "request_body": {},
+      "status": 200,
+      "header": {
+        "Content-Type": [
+          "application/grpc"
+        ]
+      },
+      "body_encoding": "codec",
+      "body": {
+        "createdAt": "2026-10-22T18:24:00Z",
+        "tokenId": "ak-kit0000000000000000001",
+        "tokenName": "kit-owner-manager",
+        "userIdentity": {
+          "userId": "us-kit0000000000000000002",
+          "username": "kit-person-1"
+        },
+        "workspaceId": "ac-kit0000000000000000003",
+        "workspaceName": "kit-workspace"
+      }
+    },
+    {
+      "operation": "modal.members.list",
+      "method": "POST",
+      "url": "https://api.modal.com/modal.client.ModalClient/WorkspaceMembersList?",
+      "request_body": {},
+      "status": 200,
+      "header": {
+        "Content-Type": [
+          "application/grpc"
+        ]
+      },
+      "body_encoding": "codec",
+      "body": {
+        "members": [
+          {
+            "email": "owner@example.com",
+            "identityProviderType": "IDENTITY_PROVIDER_TYPE_GITHUB",
+            "joinedAt": 1792690717.573259,
+            "lastActiveAt": 1792696568.509233,
+            "memberDisplayname": "kit-person-2",
+            "memberId": "me-kit0000000000000000004",
+            "memberRole": "MEMBER_ROLE_OWNER",
+            "userId": "us-kit0000000000000000005"
+          },
+          {
+            "email": "manager@example.com",
+            "identityProviderType": "IDENTITY_PROVIDER_TYPE_GOOGLE_OAUTH",
+            "joinedAt": 1792693160.513733,
+            "lastActiveAt": 1792701185.429879,
+            "memberDisplayname": "kit-person-1",
+            "memberId": "me-kit0000000000000000006",
+            "memberRole": "MEMBER_ROLE_MANAGER",
+            "userId": "us-kit0000000000000000002"
+          },
+          {
+            "email": "member@example.com",
+            "identityProviderType": "IDENTITY_PROVIDER_TYPE_GOOGLE_OAUTH",
+            "joinedAt": 1792692955.704395,
+            "memberDisplayname": "kit-person-3",
+            "memberId": "me-kit0000000000000000007",
+            "memberRole": "MEMBER_ROLE_USER",
+            "userId": "us-kit0000000000000000008"
+          }
+        ]
+      }
+    },
+    {
+      "operation": "modal.environments.list",
+      "method": "POST",
+      "url": "https://api.modal.com/modal.client.ModalClient/EnvironmentList?",
+      "request_body": {},
+      "status": 200,
+      "header": {
+        "Content-Type": [
+          "application/grpc"
+        ]
+      },
+      "body_encoding": "codec",
+      "body": {
+        "items": [
+          {
+            "createdAt": 1792690717.573259,
+            "default": true,
+            "effectiveRole": "ENVIRONMENT_ROLE_CONTRIBUTOR",
+            "environmentId": "en-kit0000000000000000009",
+            "name": "main"
+          },
+          {
+            "createdAt": 1792693203.051357,
+            "effectiveRole": "ENVIRONMENT_ROLE_CONTRIBUTOR",
+            "environmentId": "en-kit0000000000000000010",
+            "name": "dev",
+            "webhookSuffix": "dev"
+          },
+          {
+            "createdAt": 1792693209.645242,
+            "effectiveRole": "ENVIRONMENT_ROLE_CONTRIBUTOR",
+            "environmentId": "en-kit0000000000000000011",
+            "name": "prod",
+            "webhookSuffix": "prod"
+          }
+        ]
+      }
+    },
+    {
+      "operation": "modal.service_users.list",
+      "method": "POST",
+      "url": "https://api.modal.com/modal.client.ModalClient/ServiceUserList?",
+      "request_body": {},
+      "status": 200,
+      "header": {
+        "Content-Type": [
+          "application/grpc"
+        ]
+      },
+      "body_encoding": "codec",
+      "body": {}
+    },
+    {
+      "operation": "modal.proxy_tokens.list",
+      "method": "POST",
+      "url": "https://api.modal.com/modal.client.ModalClient/WebhookTokenList?",
+      "request_body": {},
+      "status": 200,
+      "header": {
+        "Content-Type": [
+          "application/grpc"
+        ]
+      },
+      "body_encoding": "codec",
+      "body": {
+        "tokens": [
+          {
+            "createdAt": 1792693366.280529,
+            "createdBy": {
+              "userId": "us-kit0000000000000000005",
+              "username": "kit-person-2"
+            },
+            "name": "sandbox-caller",
+            "tokenId": "wk-kit0000000000000000012"
+          }
+        ]
+      }
+    },
+    {
+      "operation": "modal.secrets.list",
+      "method": "POST",
+      "url": "https://api.modal.com/modal.client.ModalClient/SecretList?",
+      "request_body": {
+        "environmentName": "dev",
+        "pagination": {
+          "maxObjects": 100
+        }
+      },
+      "status": 200,
+      "header": {
+        "Content-Type": [
+          "application/grpc"
+        ]
+      },
+      "body_encoding": "codec",
+      "body": {
+        "environmentName": "dev",
+        "items": [
+          {
+            "createdAt": 1792693238.614543,
+            "label": "api-key",
+            "metadata": {
+              "creationInfo": {
+                "createdAt": 1792693238.614543,
+                "createdBy": "kit-person-2"
+              },
+              "environmentName": "dev",
+              "keys": [
+                "API_KEY"
+              ],
+              "name": "api-key"
+            },
+            "secretId": "st-kit0000000000000000013"
+          }
+        ]
+      }
+    },
+    {
+      "operation": "modal.secrets.list",
+      "method": "POST",
+      "url": "https://api.modal.com/modal.client.ModalClient/SecretList?",
+      "request_body": {
+        "environmentName": "main",
+        "pagination": {
+          "maxObjects": 100
+        }
+      },
+      "status": 200,
+      "header": {
+        "Content-Type": [
+          "application/grpc"
+        ]
+      },
+      "body_encoding": "codec",
+      "body": {
+        "environmentName": "main"
+      }
+    },
+    {
+      "operation": "modal.secrets.list",
+      "method": "POST",
+      "url": "https://api.modal.com/modal.client.ModalClient/SecretList?",
+      "request_body": {
+        "environmentName": "prod",
+        "pagination": {
+          "maxObjects": 100
+        }
+      },
+      "status": 200,
+      "header": {
+        "Content-Type": [
+          "application/grpc"
+        ]
+      },
+      "body_encoding": "codec",
+      "body": {
+        "environmentName": "prod",
+        "items": [
+          {
+            "createdAt": 1792693230.657203,
+            "label": "stale-token",
+            "metadata": {
+              "creationInfo": {
+                "createdAt": 1792693230.657203,
+                "createdBy": "kit-person-2"
+              },
+              "environmentName": "prod",
+              "keys": [
+                "TOKEN"
+              ],
+              "name": "stale-token"
+            },
+            "secretId": "st-kit0000000000000000014"
+          },
+          {
+            "createdAt": 1792693221.234343,
+            "label": "db-credentials",
+            "metadata": {
+              "creationInfo": {
+                "createdAt": 1792693221.234343,
+                "createdBy": "kit-person-2"
+              },
+              "environmentName": "prod",
+              "keys": [
+                "DB_PASSWORD"
+              ],
+              "name": "db-credentials"
+            },
+            "secretId": "st-kit0000000000000000015"
+          }
+        ]
+      }
+    },
+    {
+      "operation": "modal.apps.list",
+      "method": "POST",
+      "url": "https://api.modal.com/modal.client.ModalClient/AppList?",
+      "request_body": {
+        "environmentName": "dev"
+      },
+      "status": 200,
+      "header": {
+        "Content-Type": [
+          "application/grpc"
+        ]
+      },
+      "body_encoding": "codec",
+      "body": {
+        "apps": [
+          {
+            "appId": "ap-kit0000000000000000016",
+            "createdAt": 1792693253.450233,
+            "description": "sandbox-public-api",
+            "metadata": {
+              "appId": "ap-kit0000000000000000016",
+              "description": "sandbox-public-api",
+              "environmentName": "dev",
+              "functions": {
+                "web": "fu-kit0000000000000000017"
+              },
+              "lifecycle": {
+                "appState": "APP_STATE_DEPLOYED",
+                "createdAt": 1792693253.450233,
+                "createdBy": "kit-person-2",
+                "deployedAt": 1792693254.522543,
+                "deployedBy": "kit-person-2",
+                "version": 1
+              }
+            },
+            "name": "sandbox-public-api",
+            "state": "APP_STATE_DEPLOYED"
+          }
+        ]
+      }
+    },
+    {
+      "operation": "modal.apps.info.get",
+      "method": "POST",
+      "url": "https://api.modal.com/modal.client.ModalClient/AppGetInfo?",
+      "request_body": {
+        "appId": "ap-kit0000000000000000016"
+      },
+      "status": 200,
+      "header": {
+        "Content-Type": [
+          "application/grpc"
+        ]
+      },
+      "body_encoding": "codec",
+      "body": {
+        "functionInfoSummaries": {
+          "fu-kit0000000000000000017": {
+            "requiresProxyAuth": false,
+            "webFunction": true
+          }
+        },
+        "info": {
+          "appId": "ap-kit0000000000000000016",
+          "description": "sandbox-public-api",
+          "environmentName": "dev",
+          "functions": {
+            "web": "fu-kit0000000000000000017"
+          },
+          "lifecycle": {
+            "appState": "APP_STATE_DEPLOYED",
+            "createdAt": 1792693253.450233,
+            "createdBy": "kit-person-2",
+            "deployedAt": 1792693254.522543,
+            "deployedBy": "kit-person-2",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "operation": "modal.apps.list",
+      "method": "POST",
+      "url": "https://api.modal.com/modal.client.ModalClient/AppList?",
+      "request_body": {
+        "environmentName": "main"
+      },
+      "status": 200,
+      "header": {
+        "Content-Type": [
+          "application/grpc"
+        ]
+      },
+      "body_encoding": "codec",
+      "body": {}
+    },
+    {
+      "operation": "modal.apps.list",
+      "method": "POST",
+      "url": "https://api.modal.com/modal.client.ModalClient/AppList?",
+      "request_body": {
+        "environmentName": "prod"
+      },
+      "status": 200,
+      "header": {
+        "Content-Type": [
+          "application/grpc"
+        ]
+      },
+      "body_encoding": "codec",
+      "body": {
+        "apps": [
+          {
+            "appId": "ap-kit0000000000000000018",
+            "createdAt": 1792693255.735062,
+            "description": "sandbox-private-api",
+            "metadata": {
+              "appId": "ap-kit0000000000000000018",
+              "description": "sandbox-private-api",
+              "environmentName": "prod",
+              "functions": {
+                "web": "fu-kit0000000000000000019"
+              },
+              "lifecycle": {
+                "appState": "APP_STATE_DEPLOYED",
+                "createdAt": 1792693255.735062,
+                "createdBy": "kit-person-2",
+                "deployedAt": 1792693257.253291,
+                "deployedBy": "kit-person-2",
+                "version": 1
+              }
+            },
+            "name": "sandbox-private-api",
+            "state": "APP_STATE_DEPLOYED"
+          },
+          {
+            "appId": "ap-kit0000000000000000020",
+            "createdAt": 1792693348.770597,
+            "description": "sandbox-nightly-job",
+            "metadata": {
+              "appId": "ap-kit0000000000000000020",
+              "description": "sandbox-nightly-job",
+              "environmentName": "prod",
+              "functions": {
+                "run": "fu-kit0000000000000000021"
+              },
+              "lifecycle": {
+                "appState": "APP_STATE_DEPLOYED",
+                "createdAt": 1792693348.770597,
+                "createdBy": "kit-person-2",
+                "deployedAt": 1792693349.949503,
+                "deployedBy": "kit-person-2",
+                "version": 1
+              }
+            },
+            "name": "sandbox-nightly-job",
+            "state": "APP_STATE_DEPLOYED"
+          }
+        ]
+      }
+    },
+    {
+      "operation": "modal.apps.info.get",
+      "method": "POST",
+      "url": "https://api.modal.com/modal.client.ModalClient/AppGetInfo?",
+      "request_body": {
+        "appId": "ap-kit0000000000000000018"
+      },
+      "status": 200,
+      "header": {
+        "Content-Type": [
+          "application/grpc"
+        ]
+      },
+      "body_encoding": "codec",
+      "body": {
+        "functionInfoSummaries": {
+          "fu-kit0000000000000000019": {
+            "requiresProxyAuth": true,
+            "webFunction": true
+          }
+        },
+        "info": {
+          "appId": "ap-kit0000000000000000018",
+          "description": "sandbox-private-api",
+          "environmentName": "prod",
+          "functions": {
+            "web": "fu-kit0000000000000000019"
+          },
+          "lifecycle": {
+            "appState": "APP_STATE_DEPLOYED",
+            "createdAt": 1792693255.735062,
+            "createdBy": "kit-person-2",
+            "deployedAt": 1792693257.253291,
+            "deployedBy": "kit-person-2",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "operation": "modal.apps.info.get",
+      "method": "POST",
+      "url": "https://api.modal.com/modal.client.ModalClient/AppGetInfo?",
+      "request_body": {
+        "appId": "ap-kit0000000000000000020"
+      },
+      "status": 200,
+      "header": {
+        "Content-Type": [
+          "application/grpc"
+        ]
+      },
+      "body_encoding": "codec",
+      "body": {
+        "functionInfoSummaries": {
+          "fu-kit0000000000000000021": {
+            "schedule": {
+              "cron": {
+                "cronString": "0 5 * * *",
+                "timezone": "UTC"
+              }
+            }
+          }
+        },
+        "info": {
+          "appId": "ap-kit0000000000000000020",
+          "description": "sandbox-nightly-job",
+          "environmentName": "prod",
+          "functions": {
+            "run": "fu-kit0000000000000000021"
+          },
+          "lifecycle": {
+            "appState": "APP_STATE_DEPLOYED",
+            "createdAt": 1792693348.770597,
+            "createdBy": "kit-person-2",
+            "deployedAt": 1792693349.949503,
+            "deployedBy": "kit-person-2",
+            "version": 1
+          }
+        }
+      }
+    }
+  ]
+}
