@@ -1,6 +1,6 @@
 {
   "name": "modal",
-  "recorded_at": "2026-10-22T20:33:07Z",
+  "recorded_at": "2026-11-01T06:19:17Z",
   "collector": "modal",
   "collector_version": "record",
   "config": {
@@ -59,7 +59,7 @@
             "email": "manager@example.com",
             "identityProviderType": "IDENTITY_PROVIDER_TYPE_GOOGLE_OAUTH",
             "joinedAt": 1792693160.513733,
-            "lastActiveAt": 1792701185.429879,
+            "lastActiveAt": 1793513957.726947,
             "memberDisplayname": "kit-person-1",
             "memberId": "me-kit0000000000000000006",
             "memberRole": "MEMBER_ROLE_MANAGER",
@@ -254,6 +254,7 @@
           {
             "createdAt": 1792693221.234343,
             "label": "db-credentials",
+            "lastUsedAt": 1793509204.345306,
             "metadata": {
               "creationInfo": {
                 "createdAt": 1792693221.234343,
