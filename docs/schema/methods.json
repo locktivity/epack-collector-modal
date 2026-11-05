@@ -1,0 +1,28 @@
+{
+  "evidencepack/access-posture@v1": {
+    "/sign_in/sso_configured": "Lists the workspace's members and is true when any member's identity provider type is SAML.",
+    "/members/members_present": "Lists the workspace's members and is true when any member has no deletion time.",
+    "/members/member_count": "Lists the workspace's members and counts each one without a deletion time.",
+    "/members/sso_member_count": "Counts the listed members whose identity provider type is SAML.",
+    "/members/sso_coverage_pct": "Divides the listed members whose identity provider type is SAML by all listed members, rounded down.",
+    "/members/local_members_present": "Is true when any listed member's identity provider type is anything but SAML, such as GitHub or Google. They count even if the workspace requires SSO, since Modal does not report that setting. Each Modal account has one identity provider and no password, so a member whose type is SAML is not counted.",
+    "/members/local_member_count": "Counts the listed members whose identity provider type is anything but SAML, such as GitHub or Google. They count even if the workspace requires SSO, since Modal does not report that setting. Each Modal account has one identity provider and no password, so a member whose type is SAML is not counted.",
+    "/members/inactive_member_count": "Counts the listed members whose last activity time is missing or more than 90 days before the run.",
+    "/members/inactive_pct": "Divides the listed members whose last activity time is missing or more than 90 days before the run by all listed members, rounded up.",
+    "/admins/admins_present": "Is true when any listed member's workspace role is Owner or Manager.",
+    "/admins/admin_count": "Counts the listed members whose workspace role is Owner or Manager.",
+    "/admins/admin_share_pct": "Divides the listed members whose workspace role is Owner or Manager by all listed members, rounded up.",
+    "/admins/local_admins_present": "Is true when any listed Owner or Manager has an identity provider type other than SAML. They count even if the workspace requires SSO, since Modal does not report that setting. Each Modal account has one identity provider and no password, so an admin whose type is SAML is not counted.",
+    "/admins/local_admin_count": "Counts the listed Owners and Managers whose identity provider type is anything but SAML. They count even if the workspace requires SSO, since Modal does not report that setting. Each Modal account has one identity provider and no password, so an admin whose type is SAML is not counted.",
+    "/credentials/credentials_present": "Lists the workspace's service users and proxy auth tokens and is true when either list has any.",
+    "/credentials/credential_count": "Lists the workspace's service users and proxy auth tokens and counts both.",
+    "/credentials/unused_credential_count": "Counts the service users whose last-used time is missing or more than 90 days before the run.",
+    "/credentials/unused_pct": "Divides the service users whose last-used time is missing or more than 90 days before the run by all service users, rounded up.",
+    "/credentials/unrestricted_credential_count": "Counts the proxy auth tokens whose scoped flag is not set. The value is left out for a workspace with service users, since their environment roles are not read.",
+    "/credentials/unrestricted_pct": "Divides the proxy auth tokens whose scoped flag is not set by all proxy auth tokens, rounded up. The value is left out for a workspace with service users, since their environment roles are not read.",
+    "/credentials/write_access_credential_count": "Is 0 for a workspace with no service users, since a proxy auth token is good only for calling web endpoints. The value is left out for a workspace with service users, since their environment roles are not read.",
+    "/credentials/write_access_pct": "Is 0 for a workspace with proxy auth tokens and no service users, since a proxy auth token is good only for calling web endpoints. The value is left out for a workspace with service users, since their environment roles are not read.",
+    "/credentials/rotation_overdue_credential_count": "Counts the service users and proxy auth tokens created more than 90 days before the run. When any of them has no creation time, the count is left out with a partial gap.",
+    "/credentials/rotation_overdue_pct": "Divides the service users and proxy auth tokens created more than 90 days before the run by all of them, rounded up. When any of them has no creation time, the percentage is left out with a partial gap."
+  }
+}

@@ -43,8 +43,17 @@ const (
 )
 
 // RoleManager is the workspace role, in Modal's terms, that listing members
-// needs: a Member's token is refused. A permission_denied gap names it.
+// and listing service users need. A Member's token is refused. Both
+// operations declare it, so a permission_denied gap names it.
 const RoleManager = "Manager"
+
+// permissions holds the workspace role each operation needs. Modal's docs
+// name a role for listing members and listing service users. They name none
+// for the other calls the collector makes.
+var permissions = map[string]string{
+	OpListMembers:      RoleManager,
+	OpListServiceUsers: RoleManager,
+}
 
 // The request headers that carry the token. CredentialHeaders lists them for
 // componentsdk.HTTPOptions, so they go only to APIHost.
@@ -104,7 +113,7 @@ func (c *Client) ListMembers(ctx context.Context) ([]*pb.WorkspaceMembersListIte
 }
 
 // ListServiceUsers lists the workspace's service users, which only the Team
-// and Enterprise plans have.
+// and Enterprise plans have. Modal refuses a Member's token.
 func (c *Client) ListServiceUsers(ctx context.Context) ([]*pb.ServiceUser, error) {
 	resp := &pb.ServiceUserListResponse{}
 	if err := c.call(ctx, OpListServiceUsers, "ServiceUserList", &emptypb.Empty{}, resp); err != nil {
@@ -221,7 +230,7 @@ func (c *Client) AppInfo(ctx context.Context, appID string) (*pb.AppGetInfoRespo
 // call sends req to method and decodes the answer into resp. The calls are
 // all reads, so each is safe to retry.
 func (c *Client) call(ctx context.Context, op, method string, req, resp proto.Message) error {
-	ctx = componentsdk.WithOperation(ctx, componentsdk.Operation{Name: op, Safe: true})
+	ctx = componentsdk.WithOperation(ctx, componentsdk.Operation{Name: op, Safe: true, Permission: permissions[op]})
 	payload, err := proto.Marshal(req)
 	if err != nil {
 		return fmt.Errorf("%s: %w", op, err)

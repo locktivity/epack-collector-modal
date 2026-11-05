@@ -16,24 +16,24 @@ import (
 const membersRefusedWarning = "Reading members needs a token that belongs to the workspace's Owner or a Manager."
 
 // readMembers lists the workspace's members. Their rows, sorted by email,
-// appear from the audit level.
-func readMembers(ctx componentsdk.CollectorContext, client *modal.Client, gaps gapLog, now time.Time, inventories bool) *Members {
+// appear from the audit level. It also returns the members without a
+// deletion time, for the access-posture artifact, or the error the list
+// failed with.
+func readMembers(ctx componentsdk.CollectorContext, client *modal.Client, gaps gapLog, now time.Time, inventories bool) (*Members, []*pb.WorkspaceMembersListItem, error) {
 	members, err := client.ListMembers(ctx.Context())
 	if err != nil {
-		var opts []componentsdk.GapOption
-		if componentsdk.Classify(err) == componentsdk.CodePermissionDenied {
-			opts = append(opts, componentsdk.MissingPermission(modal.RoleManager), componentsdk.Warning(membersRefusedWarning))
-		}
-		gaps.notCollected(err, "/members", opts...)
-		return nil
+		gaps.notCollected(err, "/members", membersAdvice(err)...)
+		return nil, nil, err
 	}
 	out := &Members{}
 	rows := []Member{}
-	cutoff := now.Add(-inactiveDays * 24 * time.Hour)
+	live := make([]*pb.WorkspaceMembersListItem, 0, len(members))
+	cutoff := inactiveCutoff(now)
 	for _, m := range members {
 		if m.GetDeletedAt() > 0 {
 			continue
 		}
+		live = append(live, m)
 		row := Member{
 			Name:         m.GetMemberDisplayname(),
 			Email:        strings.ToLower(m.GetEmail()),
@@ -42,7 +42,7 @@ func readMembers(ctx componentsdk.CollectorContext, client *modal.Client, gaps g
 			JoinedAt:     timestamp(m.GetJoinedAt()),
 			LastActiveAt: timestamp(m.GetLastActiveAt()),
 		}
-		row.Inactive = m.GetLastActiveAt() <= 0 || time.Unix(int64(m.GetLastActiveAt()), 0).Before(cutoff)
+		row.Inactive = before(m.GetLastActiveAt(), cutoff)
 		out.TotalCount++
 		switch row.Role {
 		case "owner":
@@ -71,7 +71,17 @@ func readMembers(ctx componentsdk.CollectorContext, client *modal.Client, gaps g
 		slices.SortStableFunc(rows, func(a, b Member) int { return cmp.Or(cmp.Compare(a.Email, b.Email), cmp.Compare(a.Name, b.Name)) })
 		out.Inventory = rows
 	}
-	return out
+	return out, live, nil
+}
+
+// membersAdvice is the advice for a gap on a value from the members list.
+// For a refused token, it says who can read members. The gap names the
+// Manager role, which the members operation declares.
+func membersAdvice(err error) []componentsdk.AdviceOption {
+	if componentsdk.Classify(err) != componentsdk.CodePermissionDenied {
+		return nil
+	}
+	return []componentsdk.AdviceOption{componentsdk.Warning(membersRefusedWarning)}
 }
 
 func memberRoleName(role pb.MemberRole) string {

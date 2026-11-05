@@ -14,10 +14,12 @@ See [docs/](docs/) for setup and the output: [configuration](docs/configuration.
 | `internal/collector/members.go` | Members |
 | `internal/collector/environments.go` | Environments and the roles in restricted ones |
 | `internal/collector/tokens.go` | Service users and proxy auth tokens |
+| `internal/collector/access.go` | The access-posture artifact, built from the members, service users, and proxy auth tokens |
 | `internal/collector/workloads.go` | Secrets and apps |
 | `internal/collector/gaps.go` | Records each value the collector leaves out, and why |
 | `internal/modal/client.go` | The API client, with one named operation per call |
-| `docs/schema/v1.0.0.json` | The artifact's JSON Schema, with the `x-epack` annotations the output checks read |
+| `docs/schema/v1.0.0.json` | The detailed artifact's JSON Schema, with the `x-epack` annotations the output checks read |
+| `docs/schema/methods.json` | One sentence on how each access-posture value is measured |
 | `docs/schema/trace-map.json` | The trace map, which links each field to the calls and the code behind it |
 
 Modal's API is gRPC. The client sends each call as an HTTP/2 request through the SDK's HTTP client, with the message types from Modal's Go SDK.
@@ -35,7 +37,7 @@ make build
 make test
 ```
 
-`internal/collector/collectortest_test.go` runs the collector against canned responses: a Team workspace written by hand in `fixtures_test.go`, an empty one, and scenarios for a Member's token and a rejected token. It then makes each call fail in turn, with errors such as a 403, a timeout, or a malformed body, and checks that each value the collector could not read is left out with a gap. It also checks the output against `docs/schema/v1.0.0.json` at every collection level, and checks that no credential reaches another host or any output. `codec_test.go` lets the suite read and change Modal's protobuf bodies as JSON.
+`internal/collector/collectortest_test.go` runs the collector against canned responses: a Team workspace written by hand in `fixtures_test.go`, an empty one, and scenarios for a Member's token and a rejected token. Other scenarios cover members who all sign in through SSO, a workspace with no proxy auth tokens, one with no service users, a refused list of service users, and a `collect` key that lists one kind. The suite then makes each call fail in turn, with errors such as a 403, a timeout, or a malformed body, and checks that each value the collector could not read is left out with a gap. It also checks the output against its schemas at every collection level, and checks that no credential reaches another host or any output. `codec_test.go` lets the suite read and change Modal's protobuf bodies as JSON. `access_test.go` checks how each access-posture value is counted.
 
 `internal/modal/client_test.go` runs calls against a local HTTP/2 server, since the canned responses carry no trailers and Modal sends a call's status in them.
 
