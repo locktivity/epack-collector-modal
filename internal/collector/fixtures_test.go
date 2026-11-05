@@ -3,6 +3,7 @@ package collector
 import (
 	"encoding/binary"
 	"net/http"
+	"slices"
 	"strconv"
 	"time"
 
@@ -46,11 +47,12 @@ func grpcOK(op string, m proto.Message) collectortest.Response {
 	return collectortest.Response{Operation: op, Method: http.MethodPost, Header: http.Header{"Content-Type": {"application/grpc"}}, Body: grpcBody(m)}
 }
 
-// grpcOnce answers one call of op with m, for calls made once per
-// environment, app, or token, in the order the collector makes them.
-func grpcOnce(op string, m proto.Message) collectortest.Response {
+// grpcFor answers op with m for each request whose body holds request,
+// such as {"appId": "ap-kitpublic"}. The calls made once per environment or
+// app each get their own answer this way, whatever order they come in.
+func grpcFor(op, request string, m proto.Message) collectortest.Response {
 	r := grpcOK(op, m)
-	r.Times = 1
+	r.RequestBody = request
 	return r
 }
 
@@ -125,7 +127,7 @@ func kitServiceUsers() *pb.ServiceUserListResponse {
 
 func kitProxyTokens() *pb.WebhookTokenListResponse {
 	return pb.WebhookTokenListResponse_builder{Tokens: []*pb.WebhookToken{
-		pb.WebhookToken_builder{TokenId: "wk-kitcaller", Name: "sandbox-caller", CreatedAt: epoch(kitNow.AddDate(0, 0, -5)), CreatedBy: pb.UserIdentity_builder{UserId: "us-kit-owner", Username: "kit-owner"}.Build()}.Build(),
+		pb.WebhookToken_builder{TokenId: "wk-kitcaller", Name: "sandbox-caller", CreatedAt: epoch(kitNow.AddDate(0, 0, -120)), CreatedBy: pb.UserIdentity_builder{UserId: "us-kit-owner", Username: "kit-owner"}.Build()}.Build(),
 		pb.WebhookToken_builder{TokenId: "wk-kitprod", Name: "prod-caller", Scoped: true, CreatedAt: epoch(kitNow.AddDate(0, 0, -5)), CreatedBy: pb.UserIdentity_builder{UserId: "us-kit-manager", Username: "kit-manager"}.Build()}.Build(),
 	}}.Build()
 }
@@ -173,8 +175,18 @@ func scheduledFunction() *pb.AppGetInfoResponse_FunctionInfoSummary {
 	return pb.AppGetInfoResponse_FunctionInfoSummary_builder{Schedule: &pb.Schedule{}}.Build()
 }
 
-// kitWorkspace answers every call of a clean run, the per-environment ones
-// in the collector's order: dev, main, then prod.
+// withResponses returns responses with each answer to an operation in
+// answers replaced by those answers.
+func withResponses(responses []collectortest.Response, answers ...collectortest.Response) []collectortest.Response {
+	replaced := map[string]bool{}
+	for _, a := range answers {
+		replaced[a.Operation] = true
+	}
+	out := slices.DeleteFunc(slices.Clone(responses), func(r collectortest.Response) bool { return replaced[r.Operation] })
+	return append(out, answers...)
+}
+
+// kitWorkspace answers every call of a clean run.
 func kitWorkspace() []collectortest.Response {
 	return []collectortest.Response{
 		grpcOK(modal.OpTokenInfo, kitTokenInfo()),
@@ -184,21 +196,21 @@ func kitWorkspace() []collectortest.Response {
 		grpcOK(modal.OpListServiceUsers, kitServiceUsers()),
 		grpcOK(modal.OpListProxyTokens, kitProxyTokens()),
 		grpcOK(modal.OpListProxyTokenEnvironments, kitProdCallerEnvironments()),
-		grpcOnce(modal.OpListSecrets, kitSecretsIn(kitSecret("api-key", "dev", []string{"API_KEY"}, kitNow.AddDate(0, 0, -3), time.Time{}))),
-		grpcOnce(modal.OpListSecrets, kitSecretsIn()),
-		grpcOnce(modal.OpListSecrets, kitSecretsIn(
+		grpcFor(modal.OpListSecrets, `{"environmentName": "dev"}`, kitSecretsIn(kitSecret("api-key", "dev", []string{"API_KEY"}, kitNow.AddDate(0, 0, -3), time.Time{}))),
+		grpcFor(modal.OpListSecrets, `{"environmentName": "main"}`, kitSecretsIn()),
+		grpcFor(modal.OpListSecrets, `{"environmentName": "prod"}`, kitSecretsIn(
 			kitSecret("stale-token", "prod", []string{"TOKEN"}, kitNow.AddDate(0, 0, -3), time.Time{}),
 			kitSecret("db-credentials", "prod", []string{"DB_PASSWORD", "DB_USER"}, kitNow.AddDate(0, 0, -3), kitNow.Add(-7*time.Hour)),
 		)),
-		grpcOnce(modal.OpListApps, kitAppsIn(kitApp("sandbox-public-api", "ap-kitpublic", pb.AppState_APP_STATE_DEPLOYED))),
-		grpcOnce(modal.OpGetAppInfo, kitFunctions(map[string]*pb.AppGetInfoResponse_FunctionInfoSummary{"web": webFunction(false)})),
-		grpcOnce(modal.OpListApps, kitAppsIn()),
-		grpcOnce(modal.OpListApps, kitAppsIn(
+		grpcFor(modal.OpListApps, `{"environmentName": "dev"}`, kitAppsIn(kitApp("sandbox-public-api", "ap-kitpublic", pb.AppState_APP_STATE_DEPLOYED))),
+		grpcFor(modal.OpGetAppInfo, `{"appId": "ap-kitpublic"}`, kitFunctions(map[string]*pb.AppGetInfoResponse_FunctionInfoSummary{"web": webFunction(false)})),
+		grpcFor(modal.OpListApps, `{"environmentName": "main"}`, kitAppsIn()),
+		grpcFor(modal.OpListApps, `{"environmentName": "prod"}`, kitAppsIn(
 			kitApp("sandbox-private-api", "ap-kitprivate", pb.AppState_APP_STATE_DEPLOYED),
 			kitApp("sandbox-nightly-job", "ap-kitnightly", pb.AppState_APP_STATE_DEPLOYED),
 			kitApp("old-job", "ap-kitold", pb.AppState_APP_STATE_STOPPED),
 		)),
-		grpcOnce(modal.OpGetAppInfo, kitFunctions(map[string]*pb.AppGetInfoResponse_FunctionInfoSummary{"web": webFunction(true)})),
-		grpcOnce(modal.OpGetAppInfo, kitFunctions(map[string]*pb.AppGetInfoResponse_FunctionInfoSummary{"run": scheduledFunction()})),
+		grpcFor(modal.OpGetAppInfo, `{"appId": "ap-kitprivate"}`, kitFunctions(map[string]*pb.AppGetInfoResponse_FunctionInfoSummary{"web": webFunction(true)})),
+		grpcFor(modal.OpGetAppInfo, `{"appId": "ap-kitnightly"}`, kitFunctions(map[string]*pb.AppGetInfoResponse_FunctionInfoSummary{"run": scheduledFunction()})),
 	}
 }

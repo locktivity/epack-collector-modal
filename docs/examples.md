@@ -28,7 +28,7 @@ collectors:
 
 ## Example Output
 
-For a Team workspace read with a Manager's token, at the `trust` level, `artifacts/modal.json` holds:
+For a Team workspace read with a Manager's token, at the `trust` level, `artifacts/modal.details.json` holds:
 
 ```json
 {
@@ -57,12 +57,41 @@ For a Team workspace read with a Manager's token, at the `trust` level, `artifac
 }
 ```
 
-With a Member's token, `members` is absent, and `artifacts/modal.collector-result.json` records why:
+For the same workspace, `artifacts/modal.access-posture.json` holds:
+
+```json
+{
+  "schema_version": "1.0.0",
+  "collected_at": "2026-10-22T12:00:00Z",
+  "provider": "modal",
+  "system_type": "platform",
+  "sign_in": {"sso_configured": false},
+  "members": {
+    "members_present": true,
+    "sso_coverage_pct": 0,
+    "local_members_present": true,
+    "inactive_pct": 67
+  },
+  "admins": {
+    "admins_present": true,
+    "admin_share_pct": 67,
+    "local_admins_present": true
+  },
+  "credentials": {
+    "credentials_present": true,
+    "rotation_overdue_pct": 25
+  }
+}
+```
+
+The workspace has service users, so `unrestricted_pct` and `write_access_pct` are left out with a `not_read` gap.
+
+With a Member's token, `members` and `service_users` are absent and `artifacts/modal.collector-result.json` has a gap for each. The access-posture artifact leaves out `sign_in`, `members`, and `admins`, and the credential counts and percentages. Each has a `permission_denied` gap. At `audit`, the detailed artifact's gap on the members is:
 
 ```json
 "gaps": [
   {
-    "path": "artifacts/modal.json",
+    "path": "artifacts/modal.details.json",
     "pointer": "/members",
     "status": "not_collected",
     "code": "permission_denied",
@@ -70,7 +99,7 @@ With a Member's token, `members` is absent, and `artifacts/modal.collector-resul
     "vendor_code": "PERMISSION_DENIED",
     "operation": "modal.members.list",
     "call": 2,
-    "source": "internal/collector/members.go:27",
+    "source": "internal/collector/members.go:25",
     "missing_permission": "Manager",
     "warning": "Reading members needs a token that belongs to the workspace's Owner or a Manager.",
     "detail": "modal.members.list: PERMISSION_DENIED: User example-member does not have manage access to workspace example-workspace. Contact your workspace administrator to update permissions."

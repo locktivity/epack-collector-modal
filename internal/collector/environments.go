@@ -64,7 +64,9 @@ func readEnvironments(ctx componentsdk.CollectorContext, client *modal.Client, g
 // readEnvironmentRoles reads who holds a role of their own in a restricted
 // environment, sorted by kind, then name. Members who only inherit the
 // environment's default role are left out, since default_member_role
-// covers them.
+// covers them. Service users without a role assignment are left out too.
+// A service user has No Access in any environment where it was never given
+// a role.
 func readEnvironmentRoles(ctx componentsdk.CollectorContext, client *modal.Client, gaps gapLog, item *pb.EnvironmentListItem, index int) []RoleGrant {
 	resp, err := client.EnvironmentRoles(ctx.Context(), item.GetEnvironmentId())
 	if err != nil {
@@ -74,6 +76,9 @@ func readEnvironmentRoles(ctx componentsdk.CollectorContext, client *modal.Clien
 	grants := []RoleGrant{}
 	for _, p := range resp.GetPrincipalRoles() {
 		if p.HasInheritsDefaultMemberRole() && p.GetInheritsDefaultMemberRole() {
+			continue
+		}
+		if p.GetServiceUserId() != "" && p.HasHasRoleAssignment() && !p.GetHasRoleAssignment() {
 			continue
 		}
 		grant := RoleGrant{Role: environmentRoleName(p.GetRole())}

@@ -6,16 +6,19 @@ import (
 	"slices"
 
 	"github.com/locktivity/epack/componentsdk"
+	pb "github.com/modal-labs/modal-client/go/proto/modal_proto"
 
 	"github.com/locktivity/epack-collector-modal/internal/modal"
 )
 
-// readServiceUsers lists the workspace's service users, sorted by name.
-func readServiceUsers(ctx componentsdk.CollectorContext, client *modal.Client, gaps gapLog, inventories bool) *ServiceUsers {
+// readServiceUsers lists the workspace's service users, sorted by name. It
+// also returns the list for the access-posture artifact, or the error the
+// list failed with.
+func readServiceUsers(ctx componentsdk.CollectorContext, client *modal.Client, gaps gapLog, inventories bool) (*ServiceUsers, []*pb.ServiceUser, error) {
 	users, err := client.ListServiceUsers(ctx.Context())
 	if err != nil {
 		gaps.notCollected(err, "/service_users")
-		return nil
+		return nil, nil, err
 	}
 	out := &ServiceUsers{TotalCount: len(users)}
 	rows := make([]ServiceUser, 0, len(users))
@@ -36,18 +39,19 @@ func readServiceUsers(ctx componentsdk.CollectorContext, client *modal.Client, g
 		slices.SortStableFunc(rows, func(a, b ServiceUser) int { return cmp.Compare(a.Name, b.Name) })
 		out.Inventory = rows
 	}
-	return out
+	return out, users, nil
 }
 
 // readProxyTokens lists the workspace's proxy auth tokens, sorted by name,
 // and the environments each scoped one is limited to. envErr is the error
 // the environment list failed with, if it did, since a scoped token's
-// environments are named from that list.
-func readProxyTokens(ctx componentsdk.CollectorContext, client *modal.Client, gaps gapLog, envs []environmentRef, envErr error, inventories bool) *ProxyAuthTokens {
+// environments are named from that list. It also returns the list for the
+// access-posture artifact, or the error the list failed with.
+func readProxyTokens(ctx componentsdk.CollectorContext, client *modal.Client, gaps gapLog, envs []environmentRef, envErr error, inventories bool) (*ProxyAuthTokens, []*pb.WebhookToken, error) {
 	tokens, err := client.ListProxyTokens(ctx.Context())
 	if err != nil {
 		gaps.notCollected(err, "/proxy_auth_tokens")
-		return nil
+		return nil, nil, err
 	}
 	out := &ProxyAuthTokens{TotalCount: len(tokens)}
 	rows := make([]ProxyAuthToken, 0, len(tokens))
@@ -64,7 +68,7 @@ func readProxyTokens(ctx componentsdk.CollectorContext, client *modal.Client, ga
 		rows = append(rows, row)
 	}
 	if !inventories {
-		return out
+		return out, tokens, nil
 	}
 	order := make([]int, len(rows))
 	for i := range order {
@@ -80,7 +84,7 @@ func readProxyTokens(ctx componentsdk.CollectorContext, client *modal.Client, ga
 		sorted[at] = row
 	}
 	out.Inventory = sorted
-	return out
+	return out, tokens, nil
 }
 
 // scopedEnvironments lists the environments a scoped proxy auth token

@@ -15,7 +15,7 @@ jobs:
   # conformance, and govulncheck. On a pull request it also compares each
   # scenario's output with the latest release's.
   collector:
-    uses: locktivity/epack/.github/workflows/collector-ci.yaml@2217628c4f2cc725089951dda3adf473ccc39723 # v0.9.6
+    uses: locktivity/epack/.github/workflows/collector-ci.yaml@cf4107a5798b6b442e821e7ddcff50ceaa82e8a0 # v0.10.0
     with:
       name: modal
       conformance-secrets: MODAL_TOKEN_ID MODAL_TOKEN_SECRET
