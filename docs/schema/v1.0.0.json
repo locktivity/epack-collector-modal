@@ -24,7 +24,7 @@
       "additionalProperties": false,
       "required": ["id", "name"],
       "properties": {
-        "id": {"type": "string", "description": "The workspace's ID.", "x-epack-label": "Workspace ID", "x-epack-summary": "The workspace's ID."},
+        "id": {"type": "string", "description": "The workspace's ID. Left out below the audit level.", "x-epack-label": "Workspace ID", "x-epack-summary": "The workspace's ID.", "x-epack-level": "audit"},
         "name": {"type": "string", "description": "The workspace's name.", "x-epack-label": "Workspace name", "x-epack-summary": "The workspace's name."}
       }
     },

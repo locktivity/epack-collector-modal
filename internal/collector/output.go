@@ -20,9 +20,10 @@ type Output struct {
 	Apps             *Apps            `json:"apps,omitempty"`
 }
 
-// Workspace is the workspace the token belongs to.
+// Workspace is the workspace the token belongs to. Its ID is left out below
+// the audit level.
 type Workspace struct {
-	ID   string `json:"id"`
+	ID   string `json:"id,omitempty"`
 	Name string `json:"name"`
 }
 

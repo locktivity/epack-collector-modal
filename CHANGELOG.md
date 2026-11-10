@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## v0.2.1
+
+- The collector is built on epack v0.10.5.
+- `workspace.id` in `artifacts/modal.details.json` is written from the audit level. A trust run writes the workspace's name only. The schema marks the ID `audit` and keeps it required for the runs that write it.
+- The collector result's `targets` says what the run was pointed at: the workspace the token belongs to, at `workspace` in `artifacts/modal.details.json`, and the environments the token can see, at `environments.inventory`. An environment the run could not read in full, or a list of environments it could not read, marks the environments incomplete.
+
 ## v0.2.0
 
 - Each run writes `artifacts/modal.access-posture.json` in the `evidencepack/access-posture@v1` format. It is built from the members, service users, and proxy auth tokens the collector already reads, so the token needs no new permission.
