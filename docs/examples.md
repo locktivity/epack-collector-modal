@@ -35,7 +35,7 @@ For a Team workspace read with a Manager's token, at the `trust` level, `artifac
   "schema_version": "1.0.0",
   "collected_at": "2026-10-22T12:00:00Z",
   "collected_at_level": "trust",
-  "workspace": {"id": "ac-0123456789abcdefghijkl", "name": "example-workspace"},
+  "workspace": {"name": "example-workspace"},
   "members": {
     "total_count": 3,
     "owner_count": 1,
@@ -85,6 +85,12 @@ For the same workspace, `artifacts/modal.access-posture.json` holds:
 ```
 
 The workspace has service users, so `unrestricted_pct` and `write_access_pct` are left out with a `not_read` gap.
+
+At `audit`, `workspace` also holds the workspace's ID:
+
+```json
+"workspace": {"id": "ac-0123456789abcdefghijkl", "name": "example-workspace"}
+```
 
 With a Member's token, `members` and `service_users` are absent and `artifacts/modal.collector-result.json` has a gap for each. The access-posture artifact leaves out `sign_in`, `members`, and `admins`, and the credential counts and percentages. Each has a `permission_denied` gap. At `audit`, the detailed artifact's gap on the members is:
 

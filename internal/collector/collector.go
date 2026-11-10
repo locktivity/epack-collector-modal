@@ -35,17 +35,22 @@ func collect(ctx componentsdk.CollectorContext, client *modal.Client) (*Output, 
 		principal.ID = token.GetUserIdentity().GetUserId()
 	}
 	rec.SignedInAs(principal)
+	rec.Targets(componentsdk.TargetWorkspace, location("/workspace"), "/name").
+		ChosenBy(componentsdk.ChosenByDiscovery, "")
 	gaps := gapLog{rec: rec}
 
 	now := componentsdk.Now(ctx).UTC()
-	inventories := ctx.Level().AtLeast(componentsdk.LevelAudit)
+	audit := ctx.Level().AtLeast(componentsdk.LevelAudit)
 	details := componentsdk.Selected(ctx, componentsdk.Location{Path: artifactPath})
 	access := componentsdk.Selected(ctx, componentsdk.Location{Schema: accessSchema, Path: accessPath})
 	out := &Output{
 		SchemaVersion:    SchemaVersion,
 		CollectedAt:      now.Format(time.RFC3339),
 		CollectedAtLevel: string(ctx.Level()),
-		Workspace:        Workspace{ID: token.GetWorkspaceId(), Name: token.GetWorkspaceName()},
+		Workspace:        Workspace{Name: token.GetWorkspaceName()},
+	}
+	if audit {
+		out.Workspace.ID = token.GetWorkspaceId()
 	}
 	if !details && !access {
 		return out, nil, nil
@@ -53,25 +58,28 @@ func collect(ctx componentsdk.CollectorContext, client *modal.Client) (*Output, 
 
 	var src accessSources
 	people, step := componentsdk.StartCollectorStep(ctx, "members", "Members")
-	out.Members, src.members, src.membersErr = readMembers(people, client, gaps, now, inventories)
+	out.Members, src.members, src.membersErr = readMembers(people, client, gaps, now, audit)
 	step.End()
 
 	var listed []environmentRef
 	var envErr error
 	if details {
 		envs, step := componentsdk.StartCollectorStep(ctx, "environments", "Environments")
-		out.Environments, listed, envErr = readEnvironments(envs, client, gaps, inventories)
+		out.Environments, listed, envErr = readEnvironments(envs, client, gaps, audit)
 		step.End()
+		rec.Targets(componentsdk.TargetEnvironment, location("/environments/inventory"), "/name").
+			ChosenBy(componentsdk.ChosenByDiscovery, "").
+			Assessed(location("/environments/total_count"))
 	}
 
 	tokens, step := componentsdk.StartCollectorStep(ctx, "tokens", "Service users and proxy auth tokens")
-	out.ServiceUsers, src.serviceUsers, src.serviceUsersErr = readServiceUsers(tokens, client, gaps, inventories)
-	out.ProxyAuthTokens, src.proxyTokens, src.proxyTokensErr = readProxyTokens(tokens, client, gaps, listed, envErr, inventories && details)
+	out.ServiceUsers, src.serviceUsers, src.serviceUsersErr = readServiceUsers(tokens, client, gaps, audit)
+	out.ProxyAuthTokens, src.proxyTokens, src.proxyTokensErr = readProxyTokens(tokens, client, gaps, listed, envErr, audit && details)
 	step.End()
 
 	var posture *AccessPosture
 	if access {
-		posture = buildAccess(src, now, inventories, gaps)
+		posture = buildAccess(src, now, audit, gaps)
 	}
 	if !details {
 		return out, posture, nil
@@ -83,8 +91,8 @@ func collect(ctx componentsdk.CollectorContext, client *modal.Client) (*Output, 
 		return out, posture, nil
 	}
 	workloads, step := componentsdk.StartCollectorStep(ctx, "workloads", "Secrets and apps")
-	out.Secrets = readSecrets(workloads, client, gaps, listed, inventories)
-	out.Apps = readApps(workloads, client, gaps, listed, inventories)
+	out.Secrets = readSecrets(workloads, client, gaps, listed, audit)
+	out.Apps = readApps(workloads, client, gaps, listed, audit)
 	step.End()
 	return out, posture, nil
 }

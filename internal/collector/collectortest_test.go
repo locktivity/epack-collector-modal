@@ -2,11 +2,14 @@ package collector
 
 import (
 	"cmp"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io/fs"
 	"path/filepath"
+	"reflect"
 	"slices"
+	"strings"
 	"testing"
 	"time"
 
@@ -55,6 +58,7 @@ func TestCollectorKit(t *testing.T) {
 			kitTokenWithoutCreationTime(),
 			kitAccessOnly(),
 			kitDetailsOnly(),
+			kitTrust(),
 			{
 				Name:          "token rejected",
 				ExpectFailure: componentsdk.CodeAuthFailed,
@@ -235,6 +239,27 @@ func kitMemberToken() collectortest.Scenario {
 				"/credentials": map[string]any{"credentials_present": true},
 			},
 			kitResultPath: result,
+		},
+	}
+}
+
+// kitTrust is the clean workspace at the trust level. The workspace's ID
+// and the signed-in user's are left out, and the workspace's name stays.
+func kitTrust() collectortest.Scenario {
+	return collectortest.Scenario{
+		Name:      "trust",
+		Config:    map[string]any{"level": "trust"},
+		Responses: kitWorkspace(),
+		Expect: map[string]map[string]any{
+			artifactPath: {
+				"/workspace":           map[string]any{"name": kitWorkspaceName},
+				"/members/total_count": 3,
+			},
+			kitResultPath: {
+				"/signed_in_as/provider":  "modal",
+				"/signed_in_as/tenant_id": collectortest.Absent,
+				"/signed_in_as/id":        collectortest.Absent,
+			},
 		},
 	}
 }
@@ -585,6 +610,118 @@ func kitStepPins(steps []string) map[string]any {
 	}
 	pins[fmt.Sprintf("/steps/%d", len(steps))] = collectortest.Absent
 	return pins
+}
+
+// A trust run writes none of the workspace's IDs, or its members',
+// environments', service users', tokens', or apps', in any artifact. An
+// audit run still writes the workspace's ID.
+func TestATrustRunWritesNoIDs(t *testing.T) {
+	ids := []string{kitWorkspaceID, kitManagerUserID, kitProdEnvID, "en-kitdev0123456789abcde", "us-kit-member", "mb-kit-owner", "su-kitdeployer", "wk-kitcaller", "ap-kitpublic"}
+	for _, a := range runAtLevel(t, componentsdk.LevelTrust).Artifacts {
+		for _, id := range ids {
+			if strings.Contains(string(a.Data), id) {
+				t.Errorf("the trust run wrote %s in %s", id, a.Path)
+			}
+		}
+	}
+	for _, a := range runAtLevel(t, componentsdk.LevelAudit).Artifacts {
+		if a.Path != artifactPath {
+			continue
+		}
+		var out Output
+		if err := json.Unmarshal(a.Data, &out); err != nil {
+			t.Fatal(err)
+		}
+		if out.Workspace.ID != kitWorkspaceID {
+			t.Errorf("the audit run wrote workspace ID %q, want %q", out.Workspace.ID, kitWorkspaceID)
+		}
+		return
+	}
+	t.Fatalf("the audit run wrote no %s", artifactPath)
+}
+
+// The run declares the workspace its token belongs to and the environments
+// the token can see. An environment whose roles could not be read leaves the
+// environments incomplete, and a run that could not list them declares them
+// with none counted. Below the audit level the inventory, and so the
+// environments themselves, are left out, and only the count of them is kept.
+func TestRunDeclaresTheWorkspaceAndEnvironments(t *testing.T) {
+	zero, one, three, complete, incomplete := 0, 1, 3, true, false
+	workspace := func(count *int) componentsdk.ResultTarget {
+		return componentsdk.ResultTarget{
+			Kind: componentsdk.TargetWorkspace, ChosenBy: componentsdk.ChosenByDiscovery,
+			At: &componentsdk.Location{Path: artifactPath, Pointer: "/workspace"}, Name: []string{"/name"},
+			Count: count, Complete: &complete,
+		}
+	}
+	environments := componentsdk.ResultTarget{
+		Kind: componentsdk.TargetEnvironment, ChosenBy: componentsdk.ChosenByDiscovery,
+		At: &componentsdk.Location{Path: artifactPath, Pointer: "/environments/inventory"}, Name: []string{"/name"},
+		Assessed: &componentsdk.Location{Path: artifactPath, Pointer: "/environments/total_count"},
+		Count:    &three, Complete: &complete,
+	}
+	rolesRefused := environments
+	rolesRefused.Complete = &incomplete
+	listRefused := rolesRefused
+	listRefused.Assessed, listRefused.Count = nil, &zero
+	trustEnvironments := componentsdk.ResultTarget{
+		Kind: componentsdk.TargetEnvironment, ChosenBy: componentsdk.ChosenByDiscovery,
+		Assessed: &componentsdk.Location{Path: artifactPath, Pointer: "/environments/total_count"},
+	}
+	cases := []struct {
+		name string
+		res  componentsdk.InProcessResult
+		want []componentsdk.ResultTarget
+	}{
+		{"audit", runAtLevel(t, componentsdk.LevelAudit), []componentsdk.ResultTarget{workspace(&one), environments}},
+		{"trust", runAtLevel(t, componentsdk.LevelTrust), []componentsdk.ResultTarget{workspace(nil), trustEnvironments}},
+		{
+			"audit, roles refused",
+			runAtLevel(t, componentsdk.LevelAudit, grpcError(modal.OpGetEnvironmentRoles, 7, "permission denied")),
+			[]componentsdk.ResultTarget{workspace(&one), rolesRefused},
+		},
+		{
+			"audit, environments refused",
+			runAtLevel(t, componentsdk.LevelAudit, grpcError(modal.OpListEnvironments, 7, "permission denied")),
+			[]componentsdk.ResultTarget{workspace(&one), listRefused},
+		},
+	}
+	for _, tc := range cases {
+		if !reflect.DeepEqual(tc.res.Result.Targets, tc.want) {
+			got, _ := json.Marshal(tc.res.Result.Targets)
+			want, _ := json.Marshal(tc.want)
+			t.Errorf("%s: targets = %s, want %s", tc.name, got, want)
+		}
+		for _, f := range tc.res.Result.Checks {
+			t.Errorf("%s: check finding %+v", tc.name, f)
+		}
+	}
+}
+
+// runAtLevel runs the clean workspace at level, with first answering
+// before the clean answers. A replay outside the kit can't read gRPC
+// request bodies, so each canned answer goes to every request of its
+// operation.
+func runAtLevel(t *testing.T, level componentsdk.Level, first ...collectortest.Response) componentsdk.InProcessResult {
+	t.Helper()
+	responses := append(first, kitWorkspace()...)
+	for i := range responses {
+		responses[i].RequestBody = ""
+	}
+	replay, err := collectortest.NewReplay(collectortest.Scenario{Name: t.Name(), Responses: responses})
+	if err != nil {
+		t.Fatal(err)
+	}
+	res := componentsdk.RunInProcess(Spec("test", "collectortest"), Run, componentsdk.InProcessOptions{
+		Config:    map[string]any{"level": string(level)},
+		Secrets:   kitSecrets(),
+		Transport: replay,
+		Clock:     func() time.Time { return kitNow },
+	})
+	if res.ExitCode != 0 {
+		t.Fatalf("the %s run exited %d: %+v", level, res.ExitCode, res.Failure)
+	}
+	return res
 }
 
 func TestRunRejectsInvalidConfiguration(t *testing.T) {
