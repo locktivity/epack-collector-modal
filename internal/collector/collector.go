@@ -63,10 +63,19 @@ func collect(ctx componentsdk.CollectorContext, client *modal.Client) (*Output, 
 
 	var listed []environmentRef
 	var envErr error
-	if details {
+	memberRoles := access && hasMemberRole(src.members)
+	if details || memberRoles {
 		envs, step := componentsdk.StartCollectorStep(ctx, "environments", "Environments")
-		out.Environments, listed, envErr = readEnvironments(envs, client, gaps, audit)
+		src.environments, src.environmentsErr = listEnvironments(envs, client, (details && audit) || memberRoles)
 		step.End()
+		envErr = src.environmentsErr
+	}
+	if details {
+		if envErr != nil {
+			gaps.notCollected(envErr, "/environments")
+		} else {
+			out.Environments, listed = readEnvironments(src.environments, gaps, audit)
+		}
 		rec.Targets(componentsdk.TargetEnvironment, location("/environments/inventory"), "/name").
 			ChosenBy(componentsdk.ChosenByDiscovery, "").
 			Assessed(location("/environments/total_count"))

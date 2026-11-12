@@ -137,9 +137,34 @@ func TestAccessSignIn(t *testing.T) {
 	}
 }
 
+// testMemberID is testMember with the Modal user ID id.
+func testMemberID(id string, role pb.MemberRole, provider pb.IdentityProviderType) *pb.WorkspaceMembersListItem {
+	m := testMember(role, provider, daysAgo(1))
+	m.SetUserId(id)
+	return m
+}
+
+// restrictedEnvironment is a restricted environment whose default member
+// role is defaultRole, where the Members with the user IDs in contributors
+// have the Contributor role.
+func restrictedEnvironment(defaultRole pb.EnvironmentRole, contributors ...string) environmentList {
+	item := pb.EnvironmentListItem_builder{Name: "prod", EnvironmentId: "en-prod", IsManaged: true, DefaultMemberRole: defaultRole.Enum()}.Build()
+	var principals []*pb.EnvironmentGetRolesResponse_Principal
+	for _, id := range contributors {
+		principals = append(principals, pb.EnvironmentGetRolesResponse_Principal_builder{UserId: id, Role: pb.EnvironmentRole_ENVIRONMENT_ROLE_CONTRIBUTOR}.Build())
+	}
+	roles := pb.EnvironmentGetRolesResponse_builder{Name: "prod", PrincipalRoles: principals}.Build()
+	return environmentList{items: []*pb.EnvironmentListItem{item}, roles: map[string]environmentRoles{"en-prod": {resp: roles}}}
+}
+
+// viewerEnvironment is a restricted environment where every Member is a
+// Viewer, so no Member is an admin.
+var viewerEnvironment = restrictedEnvironment(pb.EnvironmentRole_ENVIRONMENT_ROLE_VIEWER)
+
 // Modal does not report MFA, so local_admin_mfa_coverage_pct has an
-// unsupported gap. local_admins_present says whether any Owner or Manager
-// signs in without SAML.
+// unsupported gap. local_admins_present says whether any admin signs in
+// without SAML. A restricted environment limits every Member here, so the
+// admins are the Owner and the Managers.
 func TestAccessAdmins(t *testing.T) {
 	cases := map[string]struct {
 		members []*pb.WorkspaceMembersListItem
@@ -160,10 +185,76 @@ func TestAccessAdmins(t *testing.T) {
 	}
 	for name, tc := range cases {
 		t.Run(name, func(t *testing.T) {
-			doc, gaps := buildTestAccess(t, accessSources{members: tc.members}, true)
+			doc, gaps := buildTestAccess(t, accessSources{members: tc.members, environments: viewerEnvironment}, true)
 			wantSection(t, doc, "admins", tc.want)
 			wantGap(t, gaps, "/admins/local_admin_mfa_coverage_pct", componentsdk.CodeUnsupported)
 			wantGap(t, gaps, "/admins/local_mfa_admin_count", componentsdk.CodeUnsupported)
+		})
+	}
+}
+
+// A Member is an admin when no restricted environment limits them: there is
+// none, or they have the Contributor role in each, their own or the
+// environment's default.
+func TestAccessAdminsCountMembersNoEnvironmentLimits(t *testing.T) {
+	members := []*pb.WorkspaceMembersListItem{
+		testMemberID("us-owner", owner, saml),
+		testMemberID("us-dev", user, github),
+		testMemberID("us-analyst", user, google),
+	}
+	cases := map[string]struct {
+		environments environmentList
+		want         map[string]any
+	}{
+		"no restricted environment": {
+			environmentList{items: []*pb.EnvironmentListItem{pb.EnvironmentListItem_builder{Name: "main", EnvironmentId: "en-main"}.Build()}},
+			map[string]any{"admins_present": true, "admin_count": 3, "admin_share_pct": 100, "local_admins_present": true, "local_admin_count": 2},
+		},
+		"one Member is a Contributor": {
+			restrictedEnvironment(pb.EnvironmentRole_ENVIRONMENT_ROLE_NO_ACCESS, "us-dev"),
+			map[string]any{"admins_present": true, "admin_count": 2, "admin_share_pct": 67, "local_admins_present": true, "local_admin_count": 1},
+		},
+		"Contributor is the default role": {
+			restrictedEnvironment(pb.EnvironmentRole_ENVIRONMENT_ROLE_CONTRIBUTOR),
+			map[string]any{"admins_present": true, "admin_count": 3, "admin_share_pct": 100, "local_admins_present": true, "local_admin_count": 2},
+		},
+		"every Member is a Viewer": {
+			viewerEnvironment,
+			map[string]any{"admins_present": true, "admin_count": 1, "admin_share_pct": 34, "local_admins_present": false, "local_admin_count": 0},
+		},
+	}
+	for name, tc := range cases {
+		t.Run(name, func(t *testing.T) {
+			doc, gaps := buildTestAccess(t, accessSources{members: members, environments: tc.environments}, true)
+			wantSection(t, doc, "admins", tc.want)
+			wantNoGap(t, gaps, "/admins/admin_count")
+		})
+	}
+}
+
+// When the environments or a restricted environment's roles can't be read,
+// whether a Member is an admin is unknown. The values that depend on them
+// are left out with a partial gap, and a present flag stays when a known
+// admin makes it true.
+func TestAccessAdminsWithoutEnvironmentRoles(t *testing.T) {
+	refused := componentsdk.CodeError(componentsdk.CodePermissionDenied, errors.New("refused"))
+	unread := restrictedEnvironment(pb.EnvironmentRole_ENVIRONMENT_ROLE_VIEWER)
+	unread.roles["en-prod"] = environmentRoles{err: refused}
+	members := []*pb.WorkspaceMembersListItem{
+		testMemberID("us-owner", owner, saml),
+		testMemberID("us-dev", user, github),
+	}
+	cases := map[string]accessSources{
+		"environments unread": {members: members, environmentsErr: refused},
+		"roles unread":        {members: members, environments: unread},
+	}
+	for name, src := range cases {
+		t.Run(name, func(t *testing.T) {
+			doc, gaps := buildTestAccess(t, src, true)
+			wantSection(t, doc, "admins", map[string]any{"admins_present": true})
+			for _, pointer := range []string{"/admins/admin_count", "/admins/admin_share_pct", "/admins/local_admins_present", "/admins/local_admin_count"} {
+				wantGap(t, gaps, pointer, componentsdk.CodePermissionDenied)
+			}
 		})
 	}
 }
@@ -224,7 +315,7 @@ func TestAccessRounding(t *testing.T) {
 		testMember(user, saml, daysAgo(1)),
 		testMember(user, github, time.Time{}),
 	}
-	doc, _ := buildTestAccess(t, accessSources{members: members}, false)
+	doc, _ := buildTestAccess(t, accessSources{members: members, environments: viewerEnvironment}, false)
 	m, a := section(doc, "members"), section(doc, "admins")
 	if m["sso_coverage_pct"] != 66.0 || m["inactive_pct"] != 34.0 || a["admin_share_pct"] != 34.0 {
 		t.Errorf("sso_coverage_pct %v, inactive_pct %v, admin_share_pct %v; want 66, 34, 34", m["sso_coverage_pct"], m["inactive_pct"], a["admin_share_pct"])

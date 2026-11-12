@@ -13,11 +13,11 @@ From Modal's API, with a token that belongs to the workspace's Owner or a Manage
 
 ## Access posture
 
-`artifacts/modal.access-posture.json` describes access to the workspace in the shared `evidencepack/access-posture@v1` format. It is built from the members, service users, and proxy auth tokens, with no other calls.
+`artifacts/modal.access-posture.json` describes access to the workspace in the shared `evidencepack/access-posture@v1` format. It is built from the members, service users, and proxy auth tokens. In a workspace with a Member, it also reads the environments and who holds a role in each restricted one.
 
 - **Sign-in.** `sso_configured` is true when any member signs in through SAML SSO.
 - **Members.** A member who signs in through SAML SSO counts as an SSO member. A member who signs in with GitHub or Google counts as signing in without SSO, even if the workspace requires SSO, since Modal's API does not report that setting. Each Modal account has one way to sign in and no password, so an SSO member can't sign in without SSO.
-- **Admins.** The Owner and the Managers.
+- **Admins.** The Owner, the Managers, and each Member no restricted environment limits, since that Member can change or delete any app, secret or volume in the workspace. A restricted environment limits a Member whose role in it, their own or the environment's default member role, is anything but Contributor. When a restricted environment's roles can't be read, the admin values that would count a Member are left out with a `partial` gap.
 - **Machine credentials.** Service users and proxy auth tokens. A credential created more than 90 days ago counts as overdue for rotation. In a workspace without service users, a proxy auth token that works in every environment counts as unrestricted. No proxy auth token counts as having write access, since it is good only for calling web endpoints.
 
 ## Not collected
@@ -49,7 +49,7 @@ Modal does not report when a proxy auth token was last used. In a workspace with
 
 ## Values the collector does not read
 
-A service user's access comes from its role in each environment. Modal reports these roles, but the collector reads them only in restricted environments, from the `audit` level. In a workspace with service users, the unrestricted credentials and those with write access are left out with a `not_read` gap.
+A service user's access comes from its role in each environment. Modal reports these roles, but the collector reads them only in restricted environments. In a workspace with service users, the unrestricted credentials and those with write access are left out with a `not_read` gap.
 
 ## Artifacts
 

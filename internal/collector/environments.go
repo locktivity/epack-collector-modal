@@ -17,21 +17,50 @@ type environmentRef struct {
 	Name string
 }
 
-// readEnvironments lists the environments the token can see, and who holds
-// a role in each restricted one. It returns the environments for the steps
-// that read by environment, or the list's error when it failed.
-func readEnvironments(ctx componentsdk.CollectorContext, client *modal.Client, gaps gapLog, inventories bool) (*Environments, []environmentRef, error) {
+// environmentList is the environments the token can see, sorted by name,
+// and the roles read in each restricted one, by environment ID.
+type environmentList struct {
+	items []*pb.EnvironmentListItem
+	roles map[string]environmentRoles
+}
+
+// environmentRoles is the answer to the roles call for one restricted
+// environment, or the call's error.
+type environmentRoles struct {
+	resp *pb.EnvironmentGetRolesResponse
+	err  error
+}
+
+// listEnvironments lists the environments the token can see. With roles, it
+// also reads who holds which role in each restricted one.
+func listEnvironments(ctx componentsdk.CollectorContext, client *modal.Client, roles bool) (environmentList, error) {
 	items, err := client.ListEnvironments(ctx.Context())
 	if err != nil {
-		gaps.notCollected(err, "/environments")
-		return nil, nil, err
+		return environmentList{}, err
 	}
 	items = slices.Clone(items)
 	slices.SortStableFunc(items, func(a, b *pb.EnvironmentListItem) int { return cmp.Compare(a.GetName(), b.GetName()) })
-	out := &Environments{TotalCount: len(items)}
-	refs := make([]environmentRef, 0, len(items))
-	rows := make([]Environment, 0, len(items))
-	for i, item := range items {
+	out := environmentList{items: items, roles: map[string]environmentRoles{}}
+	if !roles {
+		return out, nil
+	}
+	for _, item := range items {
+		if item.GetIsManaged() {
+			resp, err := client.EnvironmentRoles(ctx.Context(), item.GetEnvironmentId())
+			out.roles[item.GetEnvironmentId()] = environmentRoles{resp: resp, err: err}
+		}
+	}
+	return out, nil
+}
+
+// readEnvironments writes the environments in list, and with inventories,
+// who holds a role in each restricted one. It returns the environments for
+// the steps that read by environment.
+func readEnvironments(list environmentList, gaps gapLog, inventories bool) (*Environments, []environmentRef) {
+	out := &Environments{TotalCount: len(list.items)}
+	refs := make([]environmentRef, 0, len(list.items))
+	rows := make([]Environment, 0, len(list.items))
+	for i, item := range list.items {
 		refs = append(refs, environmentRef{ID: item.GetEnvironmentId(), Name: item.GetName()})
 		row := Environment{
 			Name:       item.GetName(),
@@ -50,7 +79,7 @@ func readEnvironments(ctx componentsdk.CollectorContext, client *modal.Client, g
 		if row.Restricted {
 			out.RestrictedCount++
 			if inventories {
-				row.Roles = readEnvironmentRoles(ctx, client, gaps, item, i)
+				row.Roles = roleGrants(list.roles[item.GetEnvironmentId()], gaps, i)
 			}
 		}
 		rows = append(rows, row)
@@ -58,23 +87,22 @@ func readEnvironments(ctx componentsdk.CollectorContext, client *modal.Client, g
 	if inventories {
 		out.Inventory = rows
 	}
-	return out, refs, nil
+	return out, refs
 }
 
-// readEnvironmentRoles reads who holds a role of their own in a restricted
-// environment, sorted by kind, then name. Members who only inherit the
-// environment's default role are left out, since default_member_role
-// covers them. Service users without a role assignment are left out too.
-// A service user has No Access in any environment where it was never given
-// a role.
-func readEnvironmentRoles(ctx componentsdk.CollectorContext, client *modal.Client, gaps gapLog, item *pb.EnvironmentListItem, index int) []RoleGrant {
-	resp, err := client.EnvironmentRoles(ctx.Context(), item.GetEnvironmentId())
-	if err != nil {
-		gaps.notCollected(err, fmt.Sprintf("/environments/inventory/%d/roles", index))
+// roleGrants lists who holds a role of their own in a restricted
+// environment, the one at index, sorted by kind, then name. Members who
+// only inherit the environment's default role are left out, since
+// default_member_role covers them. Service users without a role assignment
+// are left out too. A service user has No Access in any environment where
+// it was never given a role.
+func roleGrants(roles environmentRoles, gaps gapLog, index int) []RoleGrant {
+	if roles.err != nil {
+		gaps.notCollected(roles.err, fmt.Sprintf("/environments/inventory/%d/roles", index))
 		return nil
 	}
 	grants := []RoleGrant{}
-	for _, p := range resp.GetPrincipalRoles() {
+	for _, p := range roles.resp.GetPrincipalRoles() {
 		if p.HasInheritsDefaultMemberRole() && p.GetInheritsDefaultMemberRole() {
 			continue
 		}
