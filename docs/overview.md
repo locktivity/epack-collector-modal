@@ -20,6 +20,13 @@ From Modal's API, with a token that belongs to the workspace's Owner or a Manage
 - **Admins.** The Owner and the Managers.
 - **Machine credentials.** Service users and proxy auth tokens. A credential created more than 90 days ago counts as overdue for rotation. In a workspace without service users, a proxy auth token that works in every environment counts as unrestricted. No proxy auth token counts as having write access, since it is good only for calling web endpoints.
 
+## Not collected
+
+Modal offers the following through its API, and the collector does not read them.
+
+- **Member API tokens.** Every API token the workspace's members hold, with its expiry and when it was last used. The machine credentials in the access-posture file are service users and proxy auth tokens only.
+- **Servers and Endpoints.** Modal Servers and Endpoints take web requests at their own URLs, and a Server or a Dedicated Endpoint can be set to accept requests without a proxy auth token. The collector's counts of web endpoints include only Web Functions.
+
 ## What it never collects
 
 - Secret values. The collector reads only the names of a secret's keys.
