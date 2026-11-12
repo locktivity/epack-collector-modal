@@ -31,8 +31,9 @@ const kitResultPath = "artifacts/modal.collector-result.json"
 var kitSteps = []string{"sign_in", "members", "environments", "tokens", "workloads"}
 
 // kitAccessSteps are the steps of a run that collects only the
-// access-posture artifact.
-var kitAccessSteps = []string{"sign_in", "members", "tokens"}
+// access-posture artifact. A workspace with a Member lists the environments
+// for it, to tell whether a restricted one limits the Member.
+var kitAccessSteps = []string{"sign_in", "members", "environments", "tokens"}
 
 // TestCollectorKit runs the collector against the scenarios below and the
 // one recorded from the sandbox, then injects faults into each operation's
@@ -55,6 +56,8 @@ func TestCollectorKit(t *testing.T) {
 			kitNoProxyTokens(),
 			kitNoServiceUsers(),
 			kitServiceUsersRefused(),
+			kitContributorMember(),
+			kitEnvironmentRolesRefused(),
 			kitTokenWithoutCreationTime(),
 			kitAccessOnly(),
 			kitDetailsOnly(),
@@ -446,6 +449,54 @@ func kitServiceUsersRefused() collectortest.Scenario {
 		Expect: map[string]map[string]any{
 			artifactPath:  {"/service_users": collectortest.Absent, "/proxy_auth_tokens/total_count": 2},
 			accessPath:    {"/credentials": map[string]any{"credentials_present": true}},
+			kitResultPath: result,
+		},
+	}
+}
+
+// kitContributorMember is the clean workspace with the Member a
+// Contributor in the restricted environment. No environment then limits
+// them, so they count as an admin beside the Owner and the Manager.
+func kitContributorMember() collectortest.Scenario {
+	roles := kitProdRoles()
+	roles.GetPrincipalRoles()[0].SetRole(pb.EnvironmentRole_ENVIRONMENT_ROLE_CONTRIBUTOR)
+	result := map[string]any{}
+	kitGapPins(result, kitAccessGaps(true, true))
+	return collectortest.Scenario{
+		Name:      "Member no environment limits",
+		Responses: withResponses(kitWorkspace(), grpcOK(modal.OpGetEnvironmentRoles, roles)),
+		Expect: map[string]map[string]any{
+			accessPath: {"/admins": map[string]any{
+				"admins_present": true, "admin_count": 3, "admin_share_pct": 100,
+				"local_admins_present": true, "local_admin_count": 3,
+			}},
+			kitResultPath: result,
+		},
+	}
+}
+
+// kitEnvironmentRolesRefused is the clean workspace with the restricted
+// environment's roles refused. Whether it limits the Member is then
+// unknown, so the admin values that count them are left out with a partial
+// gap. The Owner and the Manager still make the present flags true.
+func kitEnvironmentRolesRefused() collectortest.Scenario {
+	unknown := []string{"/admins/admin_count", "/admins/admin_share_pct", "/admins/local_admin_count"}
+	gaps := append(kitAccessGaps(true, true), kitGap{artifactPath, "/environments/inventory/2/roles", componentsdk.CodePermissionDenied})
+	for _, pointer := range unknown {
+		gaps = append(gaps, kitGap{accessPath, pointer, componentsdk.CodePermissionDenied})
+	}
+	result := map[string]any{}
+	sorted := kitGapPins(result, gaps)
+	for _, pointer := range unknown {
+		at := fmt.Sprintf("/gaps/%d/", kitGapIndex(sorted, accessPath, pointer))
+		result[at+"status"] = "partial"
+		result[at+"unmeasured"] = 1
+	}
+	return collectortest.Scenario{
+		Name:      "environment roles refused",
+		Responses: withResponses(kitWorkspace(), grpcError(modal.OpGetEnvironmentRoles, 7, "Permission denied")),
+		Expect: map[string]map[string]any{
+			accessPath:    {"/admins": map[string]any{"admins_present": true, "local_admins_present": true}},
 			kitResultPath: result,
 		},
 	}

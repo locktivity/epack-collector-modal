@@ -4,6 +4,7 @@ import (
 	"cmp"
 	"encoding/json"
 	"errors"
+	"slices"
 	"time"
 
 	"github.com/locktivity/epack/componentsdk"
@@ -55,13 +56,15 @@ type AccessMembers struct {
 	InactivePct         pct  `json:"inactive_pct,omitzero"`
 }
 
-// AccessAdmins rolls up the Owner and the Managers.
+// AccessAdmins rolls up the Owner, the Managers, and the Members no
+// restricted environment limits. A value is left out when it depends on a
+// Member whose roles could not be read.
 type AccessAdmins struct {
-	AdminsPresent      bool `json:"admins_present"`
-	AdminCount         *int `json:"admin_count,omitempty"`
-	AdminSharePct      pct  `json:"admin_share_pct,omitzero"`
-	LocalAdminsPresent bool `json:"local_admins_present"`
-	LocalAdminCount    *int `json:"local_admin_count,omitempty"`
+	AdminsPresent      *bool `json:"admins_present,omitempty"`
+	AdminCount         *int  `json:"admin_count,omitempty"`
+	AdminSharePct      pct   `json:"admin_share_pct,omitzero"`
+	LocalAdminsPresent *bool `json:"local_admins_present,omitempty"`
+	LocalAdminCount    *int  `json:"local_admin_count,omitempty"`
 }
 
 // AccessCredentials rolls up the service users and proxy auth tokens.
@@ -104,6 +107,8 @@ func percent(count, total int, rounding componentsdk.Rounding) pct {
 type accessSources struct {
 	members         []*pb.WorkspaceMembersListItem
 	membersErr      error
+	environments    environmentList
+	environmentsErr error
 	serviceUsers    []*pb.ServiceUser
 	serviceUsersErr error
 	proxyTokens     []*pb.WebhookToken
@@ -203,7 +208,7 @@ func buildAccess(src accessSources, now time.Time, audit bool, gaps gapLog) *Acc
 		gaps.access(err, "/members", opts...)
 		gaps.access(err, "/admins", opts...)
 	} else {
-		out.SignIn, out.Members, out.Admins = accessPeople(src.members, cutoff, audit)
+		out.SignIn, out.Members, out.Admins = accessPeople(src, cutoff, audit, gaps)
 	}
 	out.Credentials = accessCredentials(src, cutoff, audit, gaps)
 	for _, u := range accessUnsupported {
@@ -216,10 +221,15 @@ func buildAccess(src accessSources, now time.Time, audit bool, gaps gapLog) *Acc
 }
 
 // accessPeople rolls up the members, who are listed without a deletion
-// time. The Owner and the Managers are the admins.
-func accessPeople(members []*pb.WorkspaceMembersListItem, cutoff time.Time, audit bool) (*AccessSignIn, *AccessMembers, *AccessAdmins) {
-	var total, sso, inactive, admins, localAdmins int
-	for _, m := range members {
+// time. The Owner and the Managers are admins. A Member is an admin too when
+// no restricted environment limits them, since they can then change or
+// delete any app, secret or volume in the workspace. When that can't be
+// told for a Member, because an environment's roles could not be read, the
+// admin values that depend on them are left out with a partial gap.
+func accessPeople(src accessSources, cutoff time.Time, audit bool, gaps gapLog) (*AccessSignIn, *AccessMembers, *AccessAdmins) {
+	var total, sso, inactive, admins, localAdmins, unknown, localUnknown int
+	var unknownErr error
+	for _, m := range src.members {
 		total++
 		saml := m.GetIdentityProviderType() == pb.IdentityProviderType_IDENTITY_PROVIDER_TYPE_SAML
 		if saml {
@@ -228,8 +238,22 @@ func accessPeople(members []*pb.WorkspaceMembersListItem, cutoff time.Time, audi
 		if before(m.GetLastActiveAt(), cutoff) {
 			inactive++
 		}
-		switch m.GetMemberRole() {
-		case pb.MemberRole_MEMBER_ROLE_OWNER, pb.MemberRole_MEMBER_ROLE_MANAGER:
+		admin := true
+		if m.GetMemberRole() == pb.MemberRole_MEMBER_ROLE_USER {
+			var err error
+			admin, err = unrestricted(m.GetUserId(), src.environments, src.environmentsErr)
+			if err != nil {
+				unknown++
+				if !saml {
+					localUnknown++
+				}
+				unknownErr = cmp.Or(unknownErr, err)
+				continue
+			}
+		} else if m.GetMemberRole() != pb.MemberRole_MEMBER_ROLE_OWNER && m.GetMemberRole() != pb.MemberRole_MEMBER_ROLE_MANAGER {
+			admin = false
+		}
+		if admin {
 			admins++
 			if !saml {
 				localAdmins++
@@ -248,14 +272,82 @@ func accessPeople(members []*pb.WorkspaceMembersListItem, cutoff time.Time, audi
 		InactiveMemberCount: atAudit(inactive, audit),
 		InactivePct:         percent(inactive, total, componentsdk.RoundUp),
 	}
-	admin := &AccessAdmins{
-		AdminsPresent:      admins > 0,
-		AdminCount:         atAudit(admins, audit),
-		AdminSharePct:      percent(admins, total, componentsdk.RoundUp),
-		LocalAdminsPresent: localAdmins > 0,
-		LocalAdminCount:    atAudit(localAdmins, audit),
+	admin := &AccessAdmins{}
+	if admins > 0 || unknown == 0 {
+		admin.AdminsPresent = new(admins > 0)
+	} else {
+		gaps.partial("/admins/admins_present", unknown, unknownErr)
+	}
+	if localAdmins > 0 || localUnknown == 0 {
+		admin.LocalAdminsPresent = new(localAdmins > 0)
+	} else {
+		gaps.partial("/admins/local_admins_present", localUnknown, unknownErr)
+	}
+	if unknown == 0 {
+		admin.AdminCount = atAudit(admins, audit)
+		admin.AdminSharePct = percent(admins, total, componentsdk.RoundUp)
+	} else {
+		gaps.partial("/admins/admin_share_pct", unknown, unknownErr)
+		if audit {
+			gaps.partial("/admins/admin_count", unknown, unknownErr)
+		}
+	}
+	if localUnknown == 0 {
+		admin.LocalAdminCount = atAudit(localAdmins, audit)
+	} else if audit {
+		gaps.partial("/admins/local_admin_count", localUnknown, unknownErr)
 	}
 	return signIn, people, admin
+}
+
+// unrestricted reports whether the Member with userID can change or delete
+// anything in every environment in envs, listed with envsErr. A Member can
+// in an environment that is not restricted. In a restricted one, they can
+// only with the Contributor role, either their own or the environment's
+// default member role. The error says why it can't be told.
+func unrestricted(userID string, envs environmentList, envsErr error) (bool, error) {
+	if envsErr != nil {
+		return false, envsErr
+	}
+	var unread error
+	for _, item := range envs.items {
+		if !item.GetIsManaged() {
+			continue
+		}
+		roles := envs.roles[item.GetEnvironmentId()]
+		if roles.err != nil {
+			unread = cmp.Or(unread, roles.err)
+			continue
+		}
+		if memberEnvironmentRole(userID, item, roles.resp) != pb.EnvironmentRole_ENVIRONMENT_ROLE_CONTRIBUTOR {
+			return false, nil
+		}
+	}
+	return unread == nil, unread
+}
+
+// memberEnvironmentRole is the role the Member with userID has in the
+// restricted environment item, whose roles are resp: the role resp gives
+// them, or the environment's default member role when resp does not name
+// them.
+func memberEnvironmentRole(userID string, item *pb.EnvironmentListItem, resp *pb.EnvironmentGetRolesResponse) pb.EnvironmentRole {
+	for _, p := range resp.GetPrincipalRoles() {
+		if p.GetUserId() == userID && p.GetRole() != pb.EnvironmentRole_ENVIRONMENT_ROLE_UNSPECIFIED {
+			return p.GetRole()
+		}
+	}
+	if resp.HasDefaultMemberRole() {
+		return resp.GetDefaultMemberRole()
+	}
+	return item.GetDefaultMemberRole()
+}
+
+// hasMemberRole reports whether any of members has the Member role, which
+// makes them an admin only when no restricted environment limits them.
+func hasMemberRole(members []*pb.WorkspaceMembersListItem) bool {
+	return slices.ContainsFunc(members, func(m *pb.WorkspaceMembersListItem) bool {
+		return m.GetMemberRole() == pb.MemberRole_MEMBER_ROLE_USER
+	})
 }
 
 // accessCredentials rolls up the service users and proxy auth tokens. A
