@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## v0.2.4
+
+- The collector is built on epack v0.12.2.
+
 ## v0.2.3
 
 - The collector is built on epack v0.11.3.
