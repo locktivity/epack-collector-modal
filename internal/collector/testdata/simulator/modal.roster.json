@@ -1,0 +1,181 @@
+{
+  "version": 1,
+  "vendor": "modal",
+  "source": "The Starter workspace checklist.md sets up: three members, three environments, three secrets, three deployed apps from seed/apps, a proxy auth token, and the members' API tokens. Modal reports neither members' MFA nor when a credential was last used or made, so the roster leaves those out, and Starter has no SSO, SCIM, restricted environments or service users.",
+  "placeholders": {
+    "SANDBOX_MODAL_WORKSPACE": "example-workspace"
+  },
+  "providers": {
+    "access-posture": "modal"
+  },
+  "accounts": {
+    "owner": {
+      "kind": "member",
+      "enabled": true,
+      "roles": [
+        "Owner"
+      ],
+      "logins": "github",
+      "case": "Signed up and owns the workspace (checklist step 1). Signs in with GitHub, as the machine account that owns the GitHub sandboxes' organizations."
+    },
+    "manager": {
+      "kind": "member",
+      "enabled": true,
+      "roles": [
+        "Manager"
+      ],
+      "logins": "google",
+      "case": "Joined through the invite link (checklist step 3). The collector signs in with this member's token. Signs in with Google, as a Gmail account made for the sandbox.",
+      "signed_in_days_ago": 0
+    },
+    "member": {
+      "kind": "member",
+      "enabled": true,
+      "roles": [
+        "Member"
+      ],
+      "logins": "google",
+      "case": "Joined through the invite link (checklist step 3). Its token checks what a Member can read, then is deleted. Signs in with Google, as a Gmail account made for the sandbox."
+    }
+  },
+  "unsettled": {
+    "owner": [
+      "mfa",
+      "signed_in"
+    ],
+    "manager": [
+      "mfa"
+    ],
+    "member": [
+      "mfa",
+      "signed_in"
+    ]
+  },
+  "workspace": {
+    "name": "${SANDBOX_MODAL_WORKSPACE}",
+    "system_type": "platform",
+    "plan": "Starter",
+    "credentials": {
+      "caller": {
+        "permissions": "proxy_auth",
+        "name": "sandbox-caller",
+        "case": "Checklist step 7. Starter can't limit a proxy auth token to environments, so it works for proxy-auth endpoints in every environment. Its secret is discarded."
+      },
+      "owner_api_token": {
+        "owner": "owner",
+        "permissions": "api_token",
+        "case": "Checklist step 2. Runs the seed commands. Kept in a password manager, not in GitHub."
+      },
+      "collector_api_token": {
+        "owner": "manager",
+        "permissions": "api_token",
+        "case": "Checklist step 8. The collector signs in with it.",
+        "last_used_days_ago": 0,
+        "collector": true
+      },
+      "member_api_token": {
+        "owner": "member",
+        "permissions": "api_token",
+        "case": "Checklist step 9. A Member's token reads every list but the members, which needs a Manager or the Owner. Deleted after the check.",
+        "active": false
+      }
+    },
+    "environments": {
+      "main": {
+        "case": "Created with the workspace. The default environment, left empty.",
+        "default": true
+      },
+      "dev": {
+        "case": "Checklist step 4. Holds the public web endpoint and the api-key secret.",
+        "default": false
+      },
+      "prod": {
+        "case": "Checklist step 4. Holds the proxy-auth endpoint, the scheduled job, and two secrets.",
+        "default": false
+      }
+    },
+    "secrets": {
+      "db_credentials": {
+        "name": "db-credentials",
+        "environment": "prod",
+        "keys": [
+          "DB_PASSWORD"
+        ],
+        "case": "Checklist step 5. The scheduled job reads it every day, so it is used."
+      },
+      "stale_token": {
+        "name": "stale-token",
+        "environment": "prod",
+        "keys": [
+          "TOKEN"
+        ],
+        "case": "Checklist step 5. No app reads it, so it is never used."
+      },
+      "api_key": {
+        "name": "api-key",
+        "environment": "dev",
+        "keys": [
+          "API_KEY"
+        ],
+        "case": "Checklist step 5. No app reads it, so it is never used."
+      }
+    },
+    "deployments": {
+      "public_api": {
+        "name": "sandbox-public-api",
+        "environment": "dev",
+        "file": "seed/apps/public_api.py",
+        "web_endpoint": true,
+        "requires_proxy_auth": false,
+        "case": "Checklist step 6. A web endpoint anyone with its URL can call."
+      },
+      "private_api": {
+        "name": "sandbox-private-api",
+        "environment": "prod",
+        "file": "seed/apps/private_api.py",
+        "web_endpoint": true,
+        "requires_proxy_auth": true,
+        "case": "Checklist step 6. A web endpoint that needs a proxy auth token."
+      },
+      "nightly_job": {
+        "name": "sandbox-nightly-job",
+        "environment": "prod",
+        "file": "seed/apps/nightly_job.py",
+        "web_endpoint": false,
+        "case": "Checklist step 6. A function on a daily schedule, with no endpoint. It reads db-credentials."
+      }
+    },
+    "not_on_starter": {
+      "service_users": "Team and Enterprise",
+      "restricted_environments_and_roles": "Team and Enterprise",
+      "proxy_auth_tokens_limited_to_environments": "Team and Enterprise",
+      "custom_domains": "Team and Enterprise",
+      "static_ip_proxies": "Team and Enterprise",
+      "audit_logs": "Enterprise",
+      "saml_sso": "Enterprise"
+    }
+  },
+  "terms": {
+    "account_kinds": {
+      "member": "member"
+    },
+    "roles": {
+      "Owner": "super_admin",
+      "Manager": "admin",
+      "Member": "admin"
+    },
+    "login_methods": {
+      "github": "local",
+      "google": "local",
+      "saml": "sso"
+    },
+    "mfa_methods": {
+      "totp": "mfa"
+    },
+    "workspace_credential_permissions": {
+      "api_token": "full",
+      "proxy_auth": "read"
+    }
+  }
+}
+
