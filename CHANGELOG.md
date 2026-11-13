@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v0.2.3
+
 - The collector is built on epack v0.11.3.
 - The members are left out with an `invalid_response` gap when Modal lists none, since a workspace always has its Owner, or lists a member with no user ID or role. Through v0.2.2 an empty list counted as no members, a member with no role counted as no admin, and a Member with no user ID could take a service user's role in a restricted environment and count as an admin.
 - The environments, secrets, and apps are left out with a `permission_denied` gap when Modal lists no environments, since Modal hides an environment from a Member with No Access to it and shows the Owner and the Managers every one. So are the admin values in the access file that count a Member, with a `partial` gap. Through v0.2.2 an empty list counted as no environments, secrets, or apps, and a Member counted as an admin.
