@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- The collector is built on epack v0.11.3.
+
 ## v0.2.2
 
 - In the access file, a Member counts as an admin when no restricted environment limits them, since they can then change or delete any app, secret or volume in the workspace. A restricted environment limits a Member whose role in it, their own or the environment's default member role, is anything but Contributor. In a workspace with a Member, the collector reads the environments and the roles in each restricted one at every level, including when `collect` lists only `access-posture`. When those roles can't be read, `admin_count`, `admin_share_pct` and `local_admin_count` are left out with a `partial` gap, and so is a present flag no known admin makes true.
