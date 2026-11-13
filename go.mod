@@ -6,8 +6,8 @@ toolchain go1.26.11
 
 require (
 	github.com/locktivity/epack v0.12.2
-	github.com/modal-labs/modal-client/go v0.11.1-0.20261008014700-1954aac7e5e8
-	google.golang.org/protobuf v1.36.11
+	github.com/modal-labs/modal-client/go v0.11.1
+	google.golang.org/protobuf v1.36.12
 )
 
 require (
