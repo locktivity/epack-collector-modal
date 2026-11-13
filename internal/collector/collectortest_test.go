@@ -24,6 +24,9 @@ import (
 // kitNow is the time the hand-built scenarios run at.
 var kitNow = time.Date(2026, 10, 22, 12, 0, 0, 0, time.UTC)
 
+// kitEmptyList says why a list Modal leaves out is an empty one.
+const kitEmptyList = "Protobuf sends nothing for an empty repeated field, so an empty list arrives left out, as the sandbox recording's empty lists do."
+
 // kitResultPath is where the kit's runs write their collector result.
 const kitResultPath = "artifacts/modal.collector-result.json"
 
@@ -39,14 +42,42 @@ var kitAccessSteps = []string{"sign_in", "members", "environments", "tokens"}
 // one recorded from the sandbox, then injects faults into each operation's
 // calls and checks the output against the schema, every collection level,
 // and the credential and sensitivity rules. grpcCodec lets the kit read
-// Modal's protobuf bodies as JSON.
+// Modal's protobuf bodies as JSON. Protobuf sends nothing for a field at its
+// zero value, so to the field-faults check a dropped field and a zero one
+// look the same. The omissions declare the fields whose zero value has a
+// meaning, each with its source. Modal's messages are in
+// modal_proto/api.proto in modal-labs/modal-client.
 func TestCollectorKit(t *testing.T) {
 	collectortest.Run(t, collectortest.Suite{
-		Spec:    Spec("test", "collectortest"),
-		Run:     Run,
-		Config:  map[string]any{"level": "internal"},
-		Secrets: kitSecrets(),
-		Clock:   kitNow,
+		Spec:        Spec("test", "collectortest"),
+		Run:         Run,
+		Config:      map[string]any{"level": "internal"},
+		Secrets:     kitSecrets(),
+		Clock:       kitNow,
+		FieldFaults: true,
+		Populations: []collectortest.Population{
+			{Operation: modal.OpListServiceUsers, List: "/serviceUsers", Reason: "Only the Team and Enterprise plans have service users, as docs/overview.md says; the sandbox recording, a Starter workspace, lists none."},
+			{Operation: modal.OpListProxyTokens, List: "/tokens", Reason: "A workspace has no proxy auth tokens until one is created in its settings or with the CLI: https://modal.com/docs/guide/webhook-proxy-auth"},
+			{Operation: modal.OpListSecrets, List: "/items", Reason: "An environment can hold no secrets; the sandbox recording's main environment lists none."},
+			{Operation: modal.OpListApps, List: "/apps", Reason: "An environment can hold no apps; the sandbox recording's main environment lists none."},
+		},
+		Omissions: []collectortest.Omission{
+			{Operation: modal.OpListServiceUsers, Field: "/serviceUsers", Reason: kitEmptyList},
+			{Operation: modal.OpListProxyTokens, Field: "/tokens", Reason: kitEmptyList},
+			{Operation: modal.OpListSecrets, Field: "/items", Reason: kitEmptyList},
+			{Operation: modal.OpListApps, Field: "/apps", Reason: kitEmptyList},
+			{Operation: modal.OpListMembers, Field: "/members/*/lastActiveAt", Reason: "WorkspaceMembersListItem.last_active_at is a proto3 double, sent only when not 0, and Modal's SDK reads 0 as no activity (members.list in py/modal/_workspace.py). The sandbox recording's Member has none."},
+			{Operation: modal.OpListMembers, Field: "/members/*/identityProviderType", Reason: `The schema's other_count "Counts the listed members whose identity provider type is missing or is not GitHub, Google OAuth, or SAML." (docs/schema/v1.0.0.json), so a member with none signs in another way, and not with SAML SSO.`},
+			{Operation: modal.OpListServiceUsers, Field: "/serviceUsers/*/lastUsedAt", Reason: "ServiceUser.last_used_at is a proto3 double, sent only when not 0, and Modal's SDK reads 0 as never used (ServiceUserInfo._from_proto in py/modal/types.py)."},
+			{Operation: modal.OpListSecrets, Field: "/items/*/lastUsedAt", Reason: "SecretListItem.last_used_at is a proto3 double, sent only when not 0, and modal secret list shows 0 as never used (py/modal/cli/secret.py). The sandbox recording's unused secrets have none."},
+			{Operation: modal.OpListProxyTokens, Field: "/tokens/*/scoped", Reason: "WebhookToken.scoped is a proto3 bool with no presence, sent only when true; the sandbox recording's Starter token has none."},
+			{Operation: modal.OpListEnvironments, Field: "/items/*/default", Reason: "EnvironmentListItem.default is a proto3 bool with no presence, sent only when true; the sandbox recording sends it for main alone."},
+			{Operation: modal.OpListEnvironments, Field: "/items/*/isManaged", Reason: "EnvironmentListItem.is_managed is a proto3 bool with no presence, sent only for a restricted environment; the sandbox recording, with no restricted environment, has none."},
+			{Operation: modal.OpListEnvironments, Field: "/items/*/blockUnauthenticatedResources", Reason: "An environment with no setting of its own has no block_unauthenticated_resources and follows the workspace default, which Modal doesn't report, as docs/overview.md says. The sandbox recording's environments have none."},
+			{Operation: modal.OpGetAppInfo, Field: "/functionInfoSummaries/*/webFunction", Reason: "FunctionInfoSummary.web_function is a proto3 bool with no presence, sent only for a web function; the sandbox recording's scheduled function has none."},
+			{Operation: modal.OpGetAppInfo, Field: "/functionInfoSummaries/*/requiresProxyAuth", Reason: "Web functions are public by default, and need a proxy auth token only when requires_proxy_auth=True is set: https://modal.com/docs/guide/webhook-proxy-auth"},
+			{Operation: modal.OpGetAppInfo, Field: "/functionInfoSummaries/*/schedule", Reason: "A function that runs on no schedule has no FunctionInfoSummary.schedule; the sandbox recording's web functions have none."},
+		},
 		Scenarios: append([]collectortest.Scenario{
 			kitClean(),
 			kitMemberToken(),
@@ -503,8 +534,11 @@ func kitEnvironmentRolesRefused() collectortest.Scenario {
 }
 
 // kitTokenWithoutCreationTime is the clean workspace with sandbox-caller
-// listed without a creation time. Its age is unknown, so the credentials
-// overdue for rotation are left out with a partial gap.
+// listed without a creation time, which Modal reports for every proxy auth
+// token. The list is not an answer, so the proxy auth tokens and the
+// credential counts and percentages are left out with an invalid_response
+// gap that names the call. The service users still make
+// credentials_present true.
 func kitTokenWithoutCreationTime() collectortest.Scenario {
 	tokens := kitProxyTokens()
 	for _, t := range tokens.GetTokens() {
@@ -512,26 +546,21 @@ func kitTokenWithoutCreationTime() collectortest.Scenario {
 			t.SetCreatedAt(0)
 		}
 	}
-	rotation := []string{"/credentials/rotation_overdue_credential_count", "/credentials/rotation_overdue_pct"}
-	gaps := kitAccessGaps(true, true)
-	for _, pointer := range rotation {
-		gaps = append(gaps, kitGap{accessPath, pointer, componentsdk.CodeInvalidResponse})
+	gaps := append(kitAccessGaps(false, false), kitGap{artifactPath, "/proxy_auth_tokens", componentsdk.CodeInvalidResponse})
+	for _, v := range credentialValues {
+		gaps = append(gaps, kitGap{accessPath, v.pointer, componentsdk.CodeInvalidResponse})
 	}
 	result := map[string]any{}
 	sorted := kitGapPins(result, gaps)
-	for _, pointer := range rotation {
-		at := fmt.Sprintf("/gaps/%d/", kitGapIndex(sorted, accessPath, pointer))
-		result[at+"status"] = "partial"
-		result[at+"unmeasured"] = 1
-	}
+	result[fmt.Sprintf("/gaps/%d/operation", kitGapIndex(sorted, artifactPath, "/proxy_auth_tokens"))] = modal.OpListProxyTokens
+	responses := withResponses(kitWorkspace(), grpcOK(modal.OpListProxyTokens, tokens))
+	responses = slices.DeleteFunc(responses, func(r collectortest.Response) bool { return r.Operation == modal.OpListProxyTokenEnvironments })
 	return collectortest.Scenario{
 		Name:      "proxy auth token without a creation time",
-		Responses: withResponses(kitWorkspace(), grpcOK(modal.OpListProxyTokens, tokens)),
+		Responses: responses,
 		Expect: map[string]map[string]any{
-			artifactPath: {"/proxy_auth_tokens/inventory/1/name": "sandbox-caller", "/proxy_auth_tokens/inventory/1/created_at": nil},
-			accessPath: {
-				"/credentials": map[string]any{"credentials_present": true, "credential_count": 4},
-			},
+			artifactPath:  {"/proxy_auth_tokens": collectortest.Absent, "/service_users/total_count": 2},
+			accessPath:    {"/credentials": map[string]any{"credentials_present": true}},
 			kitResultPath: result,
 		},
 	}

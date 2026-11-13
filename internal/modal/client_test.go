@@ -73,6 +73,70 @@ func TestCallsOverHTTP2(t *testing.T) {
 	})
 }
 
+// TestClientRejectsAnswersItCannotRead checks that an answer missing a
+// field Modal always sends is invalid, and that an empty environment list
+// is refused, so the values are left out with a gap that names the call.
+// Protobuf leaves out a field at its zero value, so each such field arrives
+// as zero, and read as it stands, a member with no role would count as no
+// admin. A member with no identity provider is read, and counts as signing
+// in another way.
+func TestClientRejectsAnswersItCannotRead(t *testing.T) {
+	member := func(change func(*pb.WorkspaceMembersListItem_builder)) *pb.WorkspaceMembersListResponse {
+		b := pb.WorkspaceMembersListItem_builder{
+			UserId: "us-test", Email: "owner@example.com", MemberRole: pb.MemberRole_MEMBER_ROLE_OWNER,
+			IdentityProviderType: pb.IdentityProviderType_IDENTITY_PROVIDER_TYPE_GITHUB,
+		}
+		change(&b)
+		return pb.WorkspaceMembersListResponse_builder{Members: []*pb.WorkspaceMembersListItem{b.Build()}}.Build()
+	}
+	tokenInfo := func(c *Client) error { _, err := c.TokenInfo(t.Context()); return err }
+	members := func(c *Client) error { _, err := c.ListMembers(t.Context()); return err }
+	serviceUsers := func(c *Client) error { _, err := c.ListServiceUsers(t.Context()); return err }
+	proxyTokens := func(c *Client) error { _, err := c.ListProxyTokens(t.Context()); return err }
+	environments := func(c *Client) error { _, err := c.ListEnvironments(t.Context()); return err }
+	apps := func(c *Client) error { _, err := c.ListApps(t.Context(), "main"); return err }
+	const read, invalid, refused = componentsdk.Code(""), componentsdk.CodeInvalidResponse, componentsdk.CodePermissionDenied
+	cases := []struct {
+		name   string
+		answer proto.Message
+		call   func(*Client) error
+		code   componentsdk.Code
+	}{
+		{"a token with a workspace", pb.TokenInfoGetResponse_builder{WorkspaceId: "ac-test", WorkspaceName: "w"}.Build(), tokenInfo, read},
+		{"a token with no workspace ID", pb.TokenInfoGetResponse_builder{WorkspaceName: "w"}.Build(), tokenInfo, invalid},
+		{"a member with every field", member(func(*pb.WorkspaceMembersListItem_builder) {}), members, read},
+		{"a member with no identity provider", member(func(b *pb.WorkspaceMembersListItem_builder) { b.IdentityProviderType = 0 }), members, read},
+		{"no members", &pb.WorkspaceMembersListResponse{}, members, invalid},
+		{"a member with no user ID", member(func(b *pb.WorkspaceMembersListItem_builder) { b.UserId = "" }), members, invalid},
+		{"a member with no role", member(func(b *pb.WorkspaceMembersListItem_builder) { b.MemberRole = 0 }), members, invalid},
+		{"no service users", &pb.ServiceUserListResponse{}, serviceUsers, read},
+		{"a service user with no name", pb.ServiceUserListResponse_builder{ServiceUsers: []*pb.ServiceUser{pb.ServiceUser_builder{CreatedAt: 1792690717}.Build()}}.Build(), serviceUsers, invalid},
+		{"a service user with no creation time", pb.ServiceUserListResponse_builder{ServiceUsers: []*pb.ServiceUser{pb.ServiceUser_builder{Name: "bot"}.Build()}}.Build(), serviceUsers, invalid},
+		{"no proxy auth tokens", &pb.WebhookTokenListResponse{}, proxyTokens, read},
+		{"a proxy auth token with no creation time", pb.WebhookTokenListResponse_builder{Tokens: []*pb.WebhookToken{pb.WebhookToken_builder{Name: "caller"}.Build()}}.Build(), proxyTokens, invalid},
+		{"no environments", &pb.EnvironmentListResponse{}, environments, refused},
+		{"no apps", &pb.AppListResponse{}, apps, read},
+		{"an app with no state", pb.AppListResponse_builder{Apps: []*pb.AppListResponse_AppListItem{pb.AppListResponse_AppListItem_builder{Name: "api"}.Build()}}.Build(), apps, invalid},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			err := callServer(t, func(w http.ResponseWriter, _ *http.Request) {
+				w.Header().Set("Content-Type", "application/grpc")
+				w.Header().Set("Trailer", "Grpc-Status")
+				payload, _ := proto.Marshal(tc.answer)
+				_, _ = w.Write(frame(payload))
+				w.Header().Set("Grpc-Status", "0")
+			}, tc.call)
+			switch code := componentsdk.Classify(err); {
+			case tc.code == read && err != nil:
+				t.Errorf("read with error %v, want none", err)
+			case tc.code != read && (err == nil || code != tc.code):
+				t.Errorf("read with error %v, coded %q, want %s", err, code, tc.code)
+			}
+		})
+	}
+}
+
 func TestUnframe(t *testing.T) {
 	for name, body := range map[string][]byte{
 		"empty":      nil,

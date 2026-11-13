@@ -56,5 +56,6 @@ This value is left out every time its condition holds:
 | `members` and `service_users` in `artifacts/modal.details.json` | `permission_denied` | The token belongs to a Member. |
 | `sign_in`, `members`, and `admins` in `artifacts/modal.access-posture.json` | `permission_denied` | The token belongs to a Member. |
 | The counts and percentages under `credentials` in `artifacts/modal.access-posture.json` | `permission_denied` | The token belongs to a Member. |
+| `environments`, `secrets`, `apps`, and each scoped proxy auth token's `environments` in `artifacts/modal.details.json` | `permission_denied` | The token belongs to a Member with No Access to every environment, so Modal lists none. |
 | `unused_pct` and `unused_credential_count` in `artifacts/modal.access-posture.json` | `unsupported` | The workspace has a proxy auth token. |
 | `unrestricted_pct`, `write_access_pct`, and their counts in `artifacts/modal.access-posture.json` | `not_read` | The workspace has a service user. |

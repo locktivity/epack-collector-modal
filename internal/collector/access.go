@@ -3,7 +3,6 @@ package collector
 import (
 	"cmp"
 	"encoding/json"
-	"errors"
 	"slices"
 	"time"
 
@@ -136,11 +135,6 @@ const (
 	noProxyTokenUse   = "Modal does not report when a proxy auth token was last used."
 	rolesNotRead      = "Modal's EnvironmentGetRoles call reports each service user's role in an environment, which this collector does not read for every environment."
 )
-
-// errNoCreatedAt is why the credentials overdue for rotation are left out
-// when a credential has no creation time.
-var errNoCreatedAt = componentsdk.CodeError(componentsdk.CodeInvalidResponse,
-	errors.New("a service user or proxy auth token in the response has no creation time"))
 
 // accessUnsupported lists the values Modal does not report, in any
 // workspace.
@@ -358,8 +352,8 @@ func hasMemberRole(members []*pb.WorkspaceMembersListItem) bool {
 // unrestricted, and no credential has write access, since a proxy auth
 // token is good only for calling web endpoints. Modal does not report when
 // a proxy auth token was used, so the unused credentials are counted only
-// in a workspace without one. When a credential has no creation time, the
-// credentials overdue for rotation are left out with a partial gap.
+// in a workspace without one. The client has checked that each credential
+// has a creation time.
 func accessCredentials(src accessSources, cutoff time.Time, audit bool, gaps gapLog) *AccessCredentials {
 	if err := cmp.Or(src.serviceUsersErr, src.proxyTokensErr); err != nil {
 		if len(src.serviceUsers)+len(src.proxyTokens) == 0 {
@@ -374,34 +368,30 @@ func accessCredentials(src accessSources, cutoff time.Time, audit bool, gaps gap
 		}
 		return &AccessCredentials{CredentialsPresent: true}
 	}
-	var total, unused, unrestricted int
-	var rotation rotationCount
+	var total, unused, unrestricted, overdue int
 	for _, u := range src.serviceUsers {
 		total++
 		if before(u.GetLastUsedAt(), cutoff) {
 			unused++
 		}
-		rotation.add(u.GetCreatedAt(), cutoff)
+		if before(u.GetCreatedAt(), cutoff) {
+			overdue++
+		}
 	}
 	for _, t := range src.proxyTokens {
 		total++
 		if !t.GetScoped() {
 			unrestricted++
 		}
-		rotation.add(t.GetCreatedAt(), cutoff)
+		if before(t.GetCreatedAt(), cutoff) {
+			overdue++
+		}
 	}
 	out := &AccessCredentials{
-		CredentialsPresent: total > 0,
-		CredentialCount:    atAudit(total, audit),
-	}
-	if rotation.unknown > 0 {
-		gaps.partial("/credentials/rotation_overdue_pct", rotation.unknown, errNoCreatedAt)
-		if audit {
-			gaps.partial("/credentials/rotation_overdue_credential_count", rotation.unknown, errNoCreatedAt)
-		}
-	} else {
-		out.RotationOverdueCredentialCount = atAudit(rotation.overdue, audit)
-		out.RotationOverduePct = percent(rotation.overdue, total, componentsdk.RoundUp)
+		CredentialsPresent:             total > 0,
+		CredentialCount:                atAudit(total, audit),
+		RotationOverdueCredentialCount: atAudit(overdue, audit),
+		RotationOverduePct:             percent(overdue, total, componentsdk.RoundUp),
 	}
 	if len(src.serviceUsers) > 0 {
 		for _, v := range roleValues {
@@ -426,22 +416,6 @@ func accessCredentials(src accessSources, cutoff time.Time, audit bool, gaps gap
 	out.UnusedCredentialCount = atAudit(unused, audit)
 	out.UnusedPct = percent(unused, total, componentsdk.RoundUp)
 	return out
-}
-
-// rotationCount counts the credentials created more than 90 days before the
-// run. unknown counts those with no creation time, which Modal sends as 0.
-type rotationCount struct {
-	overdue, unknown int
-}
-
-// add counts a credential created at created, in seconds since the epoch.
-func (r *rotationCount) add(created float64, cutoff time.Time) {
-	switch {
-	case created <= 0:
-		r.unknown++
-	case before(created, cutoff):
-		r.overdue++
-	}
 }
 
 // atAudit returns n from the audit level, where the access-posture schema

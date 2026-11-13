@@ -94,39 +94,71 @@ func NewClient(httpClient *http.Client, tokenID, tokenSecret string) *Client {
 }
 
 // TokenInfo reads the token's workspace and who the token belongs to. It is
-// the collector's sign-in.
+// the collector's sign-in. An answer with no workspace ID is invalid.
 func (c *Client) TokenInfo(ctx context.Context) (*pb.TokenInfoGetResponse, error) {
 	resp := &pb.TokenInfoGetResponse{}
-	if err := c.call(ctx, OpTokenInfo, "TokenInfoGet", &pb.TokenInfoGetRequest{}, resp); err != nil {
+	res, err := c.call(ctx, OpTokenInfo, "TokenInfoGet", &pb.TokenInfoGetRequest{}, resp)
+	if err != nil {
 		return nil, err
+	}
+	if resp.GetWorkspaceId() == "" {
+		return nil, componentsdk.ResponseError(res, invalidResponse(OpTokenInfo, "has no workspace ID"))
 	}
 	return resp, nil
 }
 
 // ListMembers lists the workspace's members. Modal refuses a Member's token.
+// An empty list is invalid, since a workspace always has its Owner, and so
+// is one with a member whose user ID or role is left out. Protobuf sends
+// nothing for a field at its zero value, so a role left out arrives as
+// MEMBER_ROLE_UNSPECIFIED.
 func (c *Client) ListMembers(ctx context.Context) ([]*pb.WorkspaceMembersListItem, error) {
 	resp := &pb.WorkspaceMembersListResponse{}
-	if err := c.call(ctx, OpListMembers, "WorkspaceMembersList", &emptypb.Empty{}, resp); err != nil {
+	res, err := c.call(ctx, OpListMembers, "WorkspaceMembersList", &emptypb.Empty{}, resp)
+	if err != nil {
 		return nil, err
 	}
-	return resp.GetMembers(), nil
+	members := resp.GetMembers()
+	if len(members) == 0 {
+		return nil, componentsdk.ResponseError(res, invalidResponse(OpListMembers, "lists no members, and a workspace always has its Owner"))
+	}
+	for _, m := range members {
+		if m.GetUserId() == "" || m.GetMemberRole() == pb.MemberRole_MEMBER_ROLE_UNSPECIFIED {
+			return nil, componentsdk.ResponseError(res, invalidResponse(OpListMembers, "lists a member with no user ID or role"))
+		}
+	}
+	return members, nil
 }
 
 // ListServiceUsers lists the workspace's service users, which only the Team
-// and Enterprise plans have. Modal refuses a Member's token.
+// and Enterprise plans have. Modal refuses a Member's token. A list with a
+// service user that has no name or no creation time is invalid.
 func (c *Client) ListServiceUsers(ctx context.Context) ([]*pb.ServiceUser, error) {
 	resp := &pb.ServiceUserListResponse{}
-	if err := c.call(ctx, OpListServiceUsers, "ServiceUserList", &emptypb.Empty{}, resp); err != nil {
+	res, err := c.call(ctx, OpListServiceUsers, "ServiceUserList", &emptypb.Empty{}, resp)
+	if err != nil {
 		return nil, err
+	}
+	for _, u := range resp.GetServiceUsers() {
+		if u.GetName() == "" || u.GetCreatedAt() <= 0 {
+			return nil, componentsdk.ResponseError(res, invalidResponse(OpListServiceUsers, "lists a service user with no name or creation time"))
+		}
 	}
 	return resp.GetServiceUsers(), nil
 }
 
-// ListProxyTokens lists the workspace's proxy auth tokens.
+// ListProxyTokens lists the workspace's proxy auth tokens. A list with a
+// token that has no creation time is invalid.
 func (c *Client) ListProxyTokens(ctx context.Context) ([]*pb.WebhookToken, error) {
 	resp := &pb.WebhookTokenListResponse{}
-	if err := c.call(ctx, OpListProxyTokens, "WebhookTokenList", &emptypb.Empty{}, resp); err != nil {
+	res, err := c.call(ctx, OpListProxyTokens, "WebhookTokenList", &emptypb.Empty{}, resp)
+	if err != nil {
 		return nil, err
+	}
+	for _, t := range resp.GetTokens() {
+		if t.GetCreatedAt() <= 0 {
+			return nil, componentsdk.ResponseError(res, invalidResponse(OpListProxyTokens, "lists a token with no creation time"))
+		}
 	}
 	return resp.GetTokens(), nil
 }
@@ -136,17 +168,26 @@ func (c *Client) ListProxyTokens(ctx context.Context) ([]*pb.WebhookToken, error
 func (c *Client) ProxyTokenEnvironments(ctx context.Context, tokenID string) ([]string, error) {
 	req := pb.WebhookTokenEnvironmentListRequest_builder{TokenId: tokenID}.Build()
 	resp := &pb.WebhookTokenEnvironmentListResponse{}
-	if err := c.call(ctx, OpListProxyTokenEnvironments, "WebhookTokenEnvironmentList", req, resp); err != nil {
+	if _, err := c.call(ctx, OpListProxyTokenEnvironments, "WebhookTokenEnvironmentList", req, resp); err != nil {
 		return nil, err
 	}
 	return resp.GetEnvironmentIds(), nil
 }
 
-// ListEnvironments lists the environments the token can see.
+// ListEnvironments lists the environments the token can see. Modal hides an
+// environment from a Member with No Access to it, and the Owner and the
+// Managers see every one, as https://modal.com/docs/guide/rbac says. An
+// empty list is permission_denied, since the token then has No Access to any
+// environment.
 func (c *Client) ListEnvironments(ctx context.Context) ([]*pb.EnvironmentListItem, error) {
 	resp := &pb.EnvironmentListResponse{}
-	if err := c.call(ctx, OpListEnvironments, "EnvironmentList", &emptypb.Empty{}, resp); err != nil {
+	res, err := c.call(ctx, OpListEnvironments, "EnvironmentList", &emptypb.Empty{}, resp)
+	if err != nil {
 		return nil, err
+	}
+	if len(resp.GetItems()) == 0 {
+		return nil, componentsdk.ResponseError(res, componentsdk.CodeError(componentsdk.CodePermissionDenied,
+			fmt.Errorf("%s: the response lists no environments, so the token has No Access to any of them", OpListEnvironments)))
 	}
 	return resp.GetItems(), nil
 }
@@ -155,7 +196,7 @@ func (c *Client) ListEnvironments(ctx context.Context) ([]*pb.EnvironmentListIte
 func (c *Client) EnvironmentRoles(ctx context.Context, environmentID string) (*pb.EnvironmentGetRolesResponse, error) {
 	req := pb.EnvironmentGetRolesRequest_builder{EnvironmentId: environmentID}.Build()
 	resp := &pb.EnvironmentGetRolesResponse{}
-	if err := c.call(ctx, OpGetEnvironmentRoles, "EnvironmentGetRoles", req, resp); err != nil {
+	if _, err := c.call(ctx, OpGetEnvironmentRoles, "EnvironmentGetRoles", req, resp); err != nil {
 		return nil, err
 	}
 	return resp, nil
@@ -173,7 +214,7 @@ func (c *Client) ListSecrets(ctx context.Context, environment string) ([]*pb.Sec
 		}
 		req := pb.SecretListRequest_builder{EnvironmentName: environment, Pagination: pagination.Build()}.Build()
 		resp := &pb.SecretListResponse{}
-		if err := c.call(ctx, OpListSecrets, "SecretList", req, resp); err != nil {
+		if _, err := c.call(ctx, OpListSecrets, "SecretList", req, resp); err != nil {
 			return nil, err
 		}
 		items := resp.GetItems()
@@ -206,12 +247,19 @@ func createdAt(item *pb.SecretListItem) float64 {
 }
 
 // ListApps lists an environment's apps: the deployed ones, and those running
-// or stopped recently.
+// or stopped recently. A list with an app in no state is invalid, since
+// whether the app is deployed decides whether its functions are read.
 func (c *Client) ListApps(ctx context.Context, environment string) ([]*pb.AppListResponse_AppListItem, error) {
 	req := pb.AppListRequest_builder{EnvironmentName: environment}.Build()
 	resp := &pb.AppListResponse{}
-	if err := c.call(ctx, OpListApps, "AppList", req, resp); err != nil {
+	res, err := c.call(ctx, OpListApps, "AppList", req, resp)
+	if err != nil {
 		return nil, err
+	}
+	for _, app := range resp.GetApps() {
+		if app.GetState() == pb.AppState_APP_STATE_UNSPECIFIED {
+			return nil, componentsdk.ResponseError(res, invalidResponse(OpListApps, "lists an app with no state"))
+		}
 	}
 	return resp.GetApps(), nil
 }
@@ -221,23 +269,30 @@ func (c *Client) ListApps(ctx context.Context, environment string) ([]*pb.AppLis
 func (c *Client) AppInfo(ctx context.Context, appID string) (*pb.AppGetInfoResponse, error) {
 	req := pb.AppGetInfoRequest_builder{AppId: appID}.Build()
 	resp := &pb.AppGetInfoResponse{}
-	if err := c.call(ctx, OpGetAppInfo, "AppGetInfo", req, resp); err != nil {
+	if _, err := c.call(ctx, OpGetAppInfo, "AppGetInfo", req, resp); err != nil {
 		return nil, err
 	}
 	return resp, nil
 }
 
-// call sends req to method and decodes the answer into resp. The calls are
-// all reads, so each is safe to retry.
-func (c *Client) call(ctx context.Context, op, method string, req, resp proto.Message) error {
+// invalidResponse is the error for an answer to op the collector can't read
+// as Modal means it, with problem saying why.
+func invalidResponse(op, problem string) error {
+	return componentsdk.CodeError(componentsdk.CodeInvalidResponse, fmt.Errorf("%s: the response %s", op, problem))
+}
+
+// call sends req to method and decodes the answer into resp. It returns the
+// HTTP response, so a caller that finds the answer invalid can name the call.
+// The calls are all reads, so each is safe to retry.
+func (c *Client) call(ctx context.Context, op, method string, req, resp proto.Message) (*http.Response, error) {
 	ctx = componentsdk.WithOperation(ctx, componentsdk.Operation{Name: op, Safe: true, Permission: permissions[op]})
 	payload, err := proto.Marshal(req)
 	if err != nil {
-		return fmt.Errorf("%s: %w", op, err)
+		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 	httpReq, err := http.NewRequestWithContext(ctx, http.MethodPost, servicePath+method, bytes.NewReader(frame(payload)))
 	if err != nil {
-		return fmt.Errorf("%s: %w", op, err)
+		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 	httpReq.Header.Set("Content-Type", "application/grpc")
 	httpReq.Header.Set("Te", "trailers")
@@ -248,30 +303,30 @@ func (c *Client) call(ctx context.Context, op, method string, req, resp proto.Me
 
 	res, err := c.http.Do(httpReq)
 	if err != nil {
-		return fmt.Errorf("%s: %w", op, err)
+		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 	defer func() { _ = res.Body.Close() }()
 	body, err := io.ReadAll(io.LimitReader(res.Body, maxResponseBytes+1))
 	if err != nil {
-		return componentsdk.ResponseError(res, fmt.Errorf("%s: reading the response: %w", op, err))
+		return nil, componentsdk.ResponseError(res, fmt.Errorf("%s: reading the response: %w", op, err))
 	}
 	if res.StatusCode != http.StatusOK {
-		return componentsdk.ResponseError(res, componentsdk.CodeError(componentsdk.ClassifyResponse(res), fmt.Errorf("%s: HTTP %d", op, res.StatusCode)))
+		return nil, componentsdk.ResponseError(res, componentsdk.CodeError(componentsdk.ClassifyResponse(res), fmt.Errorf("%s: HTTP %d", op, res.StatusCode)))
 	}
 	if status, ok := responseStatus(res); ok && status.Code != 0 {
-		return componentsdk.ResponseError(res, componentsdk.CodeError(Code(status.Code), fmt.Errorf("%s: %w", op, status)))
+		return nil, componentsdk.ResponseError(res, componentsdk.CodeError(Code(status.Code), fmt.Errorf("%s: %w", op, status)))
 	}
 	if len(body) > maxResponseBytes {
-		return componentsdk.ResponseError(res, componentsdk.CodeError(componentsdk.CodeInvalidResponse, fmt.Errorf("%s: the response is larger than %d bytes", op, maxResponseBytes)))
+		return nil, componentsdk.ResponseError(res, componentsdk.CodeError(componentsdk.CodeInvalidResponse, fmt.Errorf("%s: the response is larger than %d bytes", op, maxResponseBytes)))
 	}
 	message, err := unframe(body)
 	if err == nil {
 		err = proto.Unmarshal(message, resp)
 	}
 	if err != nil {
-		return componentsdk.ResponseError(res, componentsdk.CodeError(componentsdk.CodeInvalidResponse, fmt.Errorf("%s: decoding the response: %w", op, err)))
+		return nil, componentsdk.ResponseError(res, componentsdk.CodeError(componentsdk.CodeInvalidResponse, fmt.Errorf("%s: decoding the response: %w", op, err)))
 	}
-	return nil
+	return res, nil
 }
 
 // frame prefixes a message with gRPC's flag byte, 0 for uncompressed, and

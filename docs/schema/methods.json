@@ -22,7 +22,7 @@
     "/credentials/unrestricted_pct": "Divides the proxy auth tokens whose scoped flag is not set by all proxy auth tokens, rounded up. The value is left out for a workspace with service users, since their environment roles are not read.",
     "/credentials/write_access_credential_count": "Is 0 for a workspace with no service users, since a proxy auth token is good only for calling web endpoints. The value is left out for a workspace with service users, since their environment roles are not read.",
     "/credentials/write_access_pct": "Is 0 for a workspace with proxy auth tokens and no service users, since a proxy auth token is good only for calling web endpoints. The value is left out for a workspace with service users, since their environment roles are not read.",
-    "/credentials/rotation_overdue_credential_count": "Counts the service users and proxy auth tokens created more than 90 days before the run. When any of them has no creation time, the count is left out with a partial gap.",
-    "/credentials/rotation_overdue_pct": "Divides the service users and proxy auth tokens created more than 90 days before the run by all of them, rounded up. When any of them has no creation time, the percentage is left out with a partial gap."
+    "/credentials/rotation_overdue_credential_count": "Counts the service users and proxy auth tokens created more than 90 days before the run. When either list holds one with no creation time, the list is invalid and the count is left out with a gap.",
+    "/credentials/rotation_overdue_pct": "Divides the service users and proxy auth tokens created more than 90 days before the run by all of them, rounded up. When either list holds one with no creation time, the list is invalid and the percentage is left out with a gap."
   }
 }
