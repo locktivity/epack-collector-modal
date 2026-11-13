@@ -3,6 +3,11 @@
 ## Unreleased
 
 - The collector is built on epack v0.11.3.
+- The members are left out with an `invalid_response` gap when Modal lists none, since a workspace always has its Owner, or lists a member with no user ID or role. Through v0.2.2 an empty list counted as no members, a member with no role counted as no admin, and a Member with no user ID could take a service user's role in a restricted environment and count as an admin.
+- The environments, secrets, and apps are left out with a `permission_denied` gap when Modal lists no environments, since Modal hides an environment from a Member with No Access to it and shows the Owner and the Managers every one. So are the admin values in the access file that count a Member, with a `partial` gap. Through v0.2.2 an empty list counted as no environments, secrets, or apps, and a Member counted as an admin.
+- The service users and proxy auth tokens are left out with an `invalid_response` gap when one has no creation time, which Modal reports for each, or a service user has no name. So are the credential counts and percentages in the access file. Through v0.2.2 a credential with no creation time left out only `rotation_overdue_credential_count` and `rotation_overdue_pct`, with a `partial` gap that named no call.
+- The apps are left out with an `invalid_response` gap when an app has no state. Through v0.2.2 an app with no state counted as not deployed.
+- The run fails with `invalid_response` when the sign-in's answer has no workspace ID. Through v0.2.2 the run wrote `workspace` without its `id`, which the schema requires from the audit level.
 
 ## v0.2.2
 
